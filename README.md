@@ -4,6 +4,6 @@
 |---|---|
 |Daniel||
 |Davi||
-|Lucca||
+|Lucca| Tela Biblioteca, Tela Adicionar Livro Funcionalidade|
 |Anthony||
 |Guilherme||
