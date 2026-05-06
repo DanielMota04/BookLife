@@ -5,5 +5,5 @@
 |Daniel| Tela de Menu, Tela de Ajustes, Tela Editar Perfil |
 |Davi||
 |Lucca| Tela Biblioteca, Tela Adicionar Livro Funcionalidade|
-|Anthony||
+|Anthony| Tela Modelo Livro, Tela Timer , Modal Progresso |
 |Guilherme||
