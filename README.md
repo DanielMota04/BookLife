@@ -2,7 +2,7 @@
 
 | Nome do Aluno | Telas e funcionalidades sob suas responsabilidade |
 |---|---|
-|Daniel||
+|Daniel| Tela de Menu, Tela de Ajustes, Tela Editar Perfil |
 |Davi||
 |Lucca| Tela Biblioteca, Tela Adicionar Livro Funcionalidade|
 |Anthony||
