@@ -44,10 +44,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Firebase
-google-services.json
-GoogleService-Info.plist
-
 # Variáveis de ambiente
 .env
 .env.*
@@ -55,3 +51,12 @@ GoogleService-Info.plist
 # Flutter generated
 flutter_export_environment.sh
 *.flutter-plugins
+
+# Firebase service accounts
+**/serviceAccountKey*.json
+**/firebase-adminsdk-*.json
+
+# Keystore Android
+**/key.properties
+**/*.jks
+**/*.keystore

@@ -1,0 +1,24 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "booklife-16da2",
+          "appId": "1:658177107812:android:3e1abda782e4bcaaea3c71",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "booklife-16da2",
+          "configurations": {
+            "android": "1:658177107812:android:3e1abda782e4bcaaea3c71",
+            "ios": "1:658177107812:ios:ceb9ebd5de3df5b8ea3c71",
+            "macos": "1:658177107812:ios:ceb9ebd5de3df5b8ea3c71",
+            "web": "1:658177107812:web:a5984572b0f129ffea3c71"
+          }
+        }
+      }
+    }
+  }
+}
