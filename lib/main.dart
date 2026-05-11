@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'app/app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -9,19 +10,4 @@ void main() async {
   );
 
   runApp(const BookLifeApp());
-}
-
-class BookLifeApp extends StatelessWidget {
-  const BookLifeApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'BookLife',
-      home: Scaffold(
-        appBar: AppBar(title: Text('BookLife')),
-        body: Center(child: Text('Olá!')),
-      ),
-    );
-  }
 }
