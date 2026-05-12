@@ -1,5 +1,7 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:book_life/cadastrar_livro.dart';
 
 void main() {
   runApp(const MeuApp());
@@ -23,7 +25,8 @@ class Livro {
   String progresso;
   String nota;
   String status;
-  String imageUrl;
+  String? imageUrl;
+  Uint8List? imagemBytes;
 
   Livro({
     required this.titulo,
@@ -31,7 +34,8 @@ class Livro {
     required this.progresso,
     required this.nota,
     required this.status,
-    required this.imageUrl,
+    this.imageUrl,
+    this.imagemBytes,
   });
 }
 
@@ -192,7 +196,18 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.black,
-        onPressed: () {},
+        onPressed: () async {
+          final novoLivro = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AdicionarLivroPage()),
+          );
+
+          if (novoLivro != null) {
+            setState(() {
+              _livros.add(novoLivro);
+            });
+          }
+        },
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
@@ -250,20 +265,26 @@ class LivroCard extends StatelessWidget {
               topLeft: Radius.circular(10),
               bottomLeft: Radius.circular(10),
             ),
-            child: Image.network(
-              livro.imageUrl,
-              width: 90,
-              height: 130,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  width: 90,
-                  height: 130,
-                  color: Colors.grey.shade300,
-                  child: const Icon(Icons.book),
-                );
-              },
-            ),
+            child: livro.imagemBytes != null
+                ? Image.memory(
+                    livro.imagemBytes!,
+                    width: 90,
+                    height: 130,
+                    fit: BoxFit.cover,
+                  )
+                : livro.imageUrl != null
+                  ? Image.network(
+                    livro.imageUrl!,
+                    width: 90,
+                    height: 130,
+                    fit: BoxFit.cover,
+                  )
+                  : Container(
+                    width: 90,
+                    height: 130,
+                    color: Colors.grey.shade300,
+                    child: const Icon(Icons.book),
+                  ),
           ),
           Expanded(
             child: Padding(
