@@ -1,31 +1,65 @@
 import 'package:book_life/app/router/routes.dart';
 import 'package:book_life/core/widgets/app_scaffold.dart';
+import 'package:book_life/features/settings/views/widgets/page_title_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
+  final double space = 10;
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SettingsItem(text: 'Editar Perfil', onTap: () => context.go(Routes.editProfile)),
-          SettingsItem(text: 'Alterar Senha', onTap: () => context.go(Routes.changePassword)),
-          SettingsItem(text: 'Limpar Cache', onTap: () => {}), // implementar função de limpar cache depois
+          PageTitle(title: 'Ajustes'),
+
+          SizedBox(height: space * 3),
+
+          SettingsItem(
+            text: 'Editar Perfil',
+            onTap: () => context.go(Routes.editProfile),
+          ),
+
+          SizedBox(height: space),
+
+          SettingsItem(
+            text: 'Alterar Senha',
+            onTap: () => context.go(Routes.changePassword),
+          ),
+
+          SizedBox(height: space),
+
+          SettingsItem(
+            text: 'Limpar Cache',
+            onTap: () => {},
+          ), // implementar função de limpar cache depois
+
+          SizedBox(height: space),
+
           SettingsItem(text: 'Temas', onTap: () => context.go(Routes.themes)),
+
+          SizedBox(height: space),
+
           SettingsItem(text: 'Sobre', onTap: () => context.go(Routes.about)),
-          SettingsItem(text: 'Sair', onTap: () => {
-            // implementar logout quando tiver pronto
-            context.go(Routes.welcome)
-          })
+
+          SizedBox(height: space),
+
+          SettingsItem(
+            text: 'Sair',
+            onTap: () => {
+              // implementar logout quando tiver pronto
+              context.go(Routes.welcome),
+            },
+          ),
         ],
-      )
+      ),
     );
   }
 }
-
 
 class SettingsItem extends StatelessWidget {
   const SettingsItem({super.key, required this.text, required this.onTap});
@@ -37,13 +71,18 @@ class SettingsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(width: 15),
-          Text(text),
-        ],
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF282828),
+          ),
+        ),
       ),
     );
   }
