@@ -1,5 +1,4 @@
 import 'package:book_life/app/router/routes.dart';
-import 'package:book_life/biblioteca.dart';
 import 'package:book_life/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -26,7 +25,7 @@ class AppDrawer extends StatelessWidget {
 
           Spacer(),
           DrawerItem(icon: Icons.settings_outlined, text: 'Ajustes', onTap: () {
-            Navigator.of(context).pop();
+            Navigator.pop(context);
             context.go(Routes.settings);
           }),
           SizedBox(height: 20),
@@ -36,12 +35,7 @@ class AppDrawer extends StatelessWidget {
           SizedBox(height: 20),
           DrawerItem(icon: Icons.book_outlined, text: 'Biblioteca', onTap: () {
             Navigator.pop(context);
-            Navigator.push(
-              context, 
-              MaterialPageRoute(
-                builder: (context) => const MinhaBiblioteca(),
-              ),
-            );
+            context.go(Routes.library);
           }
         ),
           Spacer(),
