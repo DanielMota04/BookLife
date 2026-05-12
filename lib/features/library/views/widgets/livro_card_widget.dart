@@ -1,3 +1,4 @@
+import 'package:book_life/core/constants/app_colors.dart';
 import 'package:book_life/core/enums/reading_status.dart';
 import 'package:book_life/core/models/book_model.dart';
 import 'package:flutter/material.dart';
@@ -83,7 +84,7 @@ class LivroCard extends StatelessWidget {
                     value: livro.progressPercentage,
                     minHeight: 5,
                     borderRadius: BorderRadius.circular(10),
-                    color: Colors.green,
+                    color: AppColors.malachite,
                   ),
                   const SizedBox(height: 12),
                   Row(
@@ -104,7 +105,7 @@ class LivroCard extends StatelessWidget {
                       Text(
                         livro.status.displayName,
                         style: GoogleFonts.inriaSans(
-                          color: Colors.green,
+                          color: AppColors.green,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

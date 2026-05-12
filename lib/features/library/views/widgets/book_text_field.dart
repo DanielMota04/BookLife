@@ -1,3 +1,4 @@
+import 'package:book_life/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -33,7 +34,7 @@ class BookTextField extends StatelessWidget {
           ),
           focusedBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12)),
-            borderSide: BorderSide(color: Color(0xFF4F7CAC), width: 2),
+            borderSide: BorderSide(color: AppColors.steelBlue, width: 2),
           ),
         ),
       ),
