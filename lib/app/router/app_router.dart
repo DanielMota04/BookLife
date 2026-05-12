@@ -7,7 +7,8 @@ import '../../features/settings/views/about_page.dart';
 import 'routes.dart';
 
 final appRouter = GoRouter(
-  initialLocation: Routes.welcome,
+  //initialLocation: Routes.welcome,
+  initialLocation: Routes.settings, // temporario, para testes
   redirect: (context, state) {
     // implementar verificação de autenticação quando o auth ja estiver configurado
     return null;
