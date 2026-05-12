@@ -13,15 +13,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: AppColors.steelBlue,
       leading: Builder(
         builder: (context) => IconButton(
-          icon: const Icon(Icons.menu),
+          icon: const Icon(Icons.menu, color: AppColors.white, size: 40,),
           onPressed: () => Scaffold.of(context).openDrawer(),
         ),
       ),
       actions: [
-        IconButton(
-          icon: const Icon(Icons.account_circle_outlined),
-          onPressed: () {},
-        ),
+        Icon(
+          Icons.account_circle_outlined,
+          color: AppColors.white,
+          size: 40,
+        ), // volto pra button quando tiver alguma finalidade
       ],
     );
   }
