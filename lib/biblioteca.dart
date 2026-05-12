@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:book_life/cadastrar_livro.dart';
+import 'package:book_life/core/widgets/app_drawer.dart';
 
 void main() {
   runApp(const MeuApp());
@@ -97,16 +98,10 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-
+      drawer: const AppDrawer(), 
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 79, 115, 172),
         elevation: 0,
-
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.menu, color: Colors.white, size: 30),
-        ),
-
         actions: [
           IconButton(
             onPressed: () {},
