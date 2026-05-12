@@ -9,7 +9,7 @@ import 'routes.dart';
 
 final appRouter = GoRouter(
   initialLocation: Routes
-      .settings, // mude isso aqui quando quiser testar uma tela (e lembre de voltar ao welcome depois :[ )
+      .welcome, // mude isso aqui quando quiser testar uma tela (e lembre de voltar ao welcome depois :[ )
   redirect: (context, state) {
     // implementar verificação de autenticação quando o auth ja estiver configurado
     return null;
