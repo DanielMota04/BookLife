@@ -1,7 +1,10 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:book_life/biblioteca.dart';
+import 'package:book_life/core/models/book_model.dart';
+import 'package:book_life/core/enums/reading_status.dart';
+import 'package:book_life/features/library/views/widgets/book_text_field.dart';
+import 'package:book_life/features/library/views/widgets/cover_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
 class AdicionarLivroPage extends StatefulWidget {
@@ -63,7 +66,8 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
               ),
 
               const SizedBox(height: 16),
-              Text("Digite o código ISBN do livro para\nautocompletar os dados",
+              Text(
+                "Digite o código ISBN do livro para\nautocompletar os dados",
                 style: GoogleFonts.inriaSans(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -71,11 +75,12 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
               ),
 
               const SizedBox(height: 10),
-              _buildTextField(controller: _isbnController, hint: "..."),
+              BookTextField(controller: _isbnController, hint: "..."),
 
               const SizedBox(height: 18),
               Center(
-                child: Text("ou",
+                child: Text(
+                  "ou",
                   style: GoogleFonts.inriaSans(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -85,7 +90,8 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
 
               const SizedBox(height: 18),
               Center(
-                child: Text("Adicione manualmente abaixo",
+                child: Text(
+                  "Adicione manualmente abaixo",
                   style: GoogleFonts.inriaSans(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
@@ -94,75 +100,38 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
               ),
 
               const SizedBox(height: 16),
-              Center(
-                child: GestureDetector(
-                  onTap: _selecionarImagem,
-                  child: Container(
-                    width: 120,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: Colors.grey.shade500),
-                    ),
-                    child: _imagemLivro != null
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(18),
-                            child: Image.memory(
-                              _imagemLivro!,
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        : Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.upload,
-                                size: 38,
-                                color: Color(0xFF1D8CA3),
-                              ),
-
-                              const SizedBox(height: 8),
-                              Text(
-                                "Capa do livro",
-                                style: GoogleFonts.inriaSans(
-                                  fontSize: 16,
-                                  color: const Color(0xFF1D8CA3),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                  ),
-                ),
+              CoverPicker(
+                imagem: _imagemLivro,
+                onTap: _selecionarImagem,
               ),
 
               const SizedBox(height: 22),
-              _buildTextField(
+              BookTextField(
                 controller: _tituloController,
                 hint: "Digite o Título",
               ),
 
               const SizedBox(height: 10),
-              _buildTextField(
+              BookTextField(
                 controller: _autorController,
                 hint: "Autor do Livro (Opcional)",
               ),
 
               const SizedBox(height: 10),
-              _buildTextField(
+              BookTextField(
                 controller: _editoraController,
                 hint: "Editora (Opcional)",
               ),
 
               const SizedBox(height: 10),
-              _buildTextField(
+              BookTextField(
                 controller: _generoController,
                 hint: "Gêneros do Livro (Opcional)",
               ),
 
               const SizedBox(height: 18),
-              Text("Sinopse (Opcional)",
+              Text(
+                "Sinopse (Opcional)",
                 style: GoogleFonts.inriaSans(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -196,14 +165,16 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                 height: 45,
                 child: ElevatedButton(
                   onPressed: () {
-                    final novoLivro = Livro(
-                      titulo: _tituloController.text,
-                      autor: _autorController.text,
-                      progresso: "0%",
-                      nota: "0",
-                      status: "Lendo",
-                      imageUrl: null,
-                      imagemBytes: _imagemLivro,
+                    final novoLivro = Book(
+                      id: DateTime.now().millisecondsSinceEpoch.toString(),
+                      userId: 'temp',
+                      title: _tituloController.text,
+                      author: _autorController.text,
+                      totalPages: 0, // vamos ver como fazer isso depois.
+                      status: ReadingStatus.reading,
+                      coverUrl: null,
+                      coverBytes: _imagemLivro,
+                      addedAt: DateTime.now(),
                     );
                     Navigator.pop(context, novoLivro);
                   },
@@ -213,7 +184,8 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                       borderRadius: BorderRadius.circular(6),
                     ),
                   ),
-                  child: Text("Salvar",
+                  child: Text(
+                    "Salvar",
                     style: GoogleFonts.inriaSans(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -225,37 +197,6 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
 
               const SizedBox(height: 20),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hint,
-  }) {
-    return SizedBox(
-      height: 42,
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: GoogleFonts.inriaSans(
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
-          ),
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 14),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey.shade500),
-          ),
-          focusedBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12)),
-            borderSide: BorderSide(color: Color(0xFF4F7CAC), width: 2),
           ),
         ),
       ),

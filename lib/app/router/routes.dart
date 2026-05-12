@@ -3,6 +3,9 @@ class Routes {
   static const login = '/login';
   static const register = '/register';
 
+  static const library = '/library';
+  static const addBook = '/library/add';
+
   static const settings = '/settings';
   static const editProfile = '/settings/profile';
   static const changePassword = '/settings/change-password';
