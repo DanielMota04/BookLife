@@ -7,6 +7,7 @@ class Routes {
   static const editProfile = '/settings/profile';
   static const changePassword = '/settings/change-password';
   static const about = '/settings/about';
+  static const themes = '/settings/themes';
 
   static String bookDetailsOf(String bookId) => '/library/$bookId';
   static String editBookOf(String bookId) => '/library/$bookId/edit';

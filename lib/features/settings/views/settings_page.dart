@@ -1,11 +1,89 @@
+import 'package:book_life/app/router/routes.dart';
 import 'package:book_life/core/widgets/app_scaffold.dart';
+import 'package:book_life/features/settings/views/widgets/page_title_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
+  final double space = 10;
+
   @override
   Widget build(BuildContext context) {
-    return CustomScaffold(body: const Center(child: Text('Ajustes')));
+    return CustomScaffold(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          PageTitle(title: 'Ajustes'),
+
+          SizedBox(height: space * 3),
+
+          SettingsItem(
+            text: 'Editar Perfil',
+            onTap: () => context.go(Routes.editProfile),
+          ),
+
+          SizedBox(height: space),
+
+          SettingsItem(
+            text: 'Alterar Senha',
+            onTap: () => context.go(Routes.changePassword),
+          ),
+
+          SizedBox(height: space),
+
+          SettingsItem(
+            text: 'Limpar Cache',
+            onTap: () => {},
+          ), // implementar função de limpar cache depois
+
+          SizedBox(height: space),
+
+          SettingsItem(text: 'Temas', onTap: () => context.go(Routes.themes)),
+
+          SizedBox(height: space),
+
+          SettingsItem(text: 'Sobre', onTap: () => context.go(Routes.about)),
+
+          SizedBox(height: space),
+
+          SettingsItem(
+            text: 'Sair',
+            onTap: () => {
+              // implementar logout quando tiver pronto
+              context.go(Routes.welcome),
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SettingsItem extends StatelessWidget {
+  const SettingsItem({super.key, required this.text, required this.onTap});
+
+  final String text;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF282828),
+          ),
+        ),
+      ),
+    );
   }
 }
