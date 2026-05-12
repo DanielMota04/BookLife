@@ -1,3 +1,4 @@
+import 'package:book_life/core/constants/app_colors.dart';
 import 'package:book_life/features/library/views/widgets/livro_card_widget.dart';
 import 'package:book_life/features/library/views/widgets/biblioteca_search_bar.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +87,7 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
               style: GoogleFonts.inriaSans(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: const Color(0xFF4F7CAC),
+                color: AppColors.steelBlue,
               ),
             ),
           ),
@@ -151,7 +152,7 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
         },
         child: Container(
           alignment: Alignment.center,
-          color: selecionado ? const Color(0xFF4F7CAC) : Colors.grey.shade300,
+          color: selecionado ? AppColors.steelBlue : Colors.grey.shade300,
           child: Text(
             texto,
             style: GoogleFonts.inriaSans(

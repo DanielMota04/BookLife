@@ -13,4 +13,6 @@ class AppColors {
   static const Color jetBlack2 = Color(0xFF162521);
   static const Color ironGrey = Color(0xFF3C474B);
   static const Color softCyan = Color(0xFF9EEFE5);
+  static const Color malachite = Color(0xFF48DD68);
+  static const Color green = Color(0xFF127327);
 }

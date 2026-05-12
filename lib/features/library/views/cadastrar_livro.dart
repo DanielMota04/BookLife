@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:book_life/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:book_life/core/models/book_model.dart';
@@ -61,7 +62,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                 style: GoogleFonts.inriaSans(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF4F7CAC),
+                  color: AppColors.steelBlue,
                 ),
               ),
 
@@ -135,7 +136,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                 style: GoogleFonts.inriaSans(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF17384F),
+                  color: AppColors.jetBlack,
                 ),
               ),
 
@@ -179,7 +180,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                     Navigator.pop(context, novoLivro);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF5D84B3),
+                    backgroundColor: AppColors.steelBlue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
