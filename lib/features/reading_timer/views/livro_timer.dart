@@ -94,12 +94,7 @@ class _LivroTimerState extends State<LivroTimer> {
         backgroundColor: Color(0xFF4F7CAC),
         leading: IconButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => LivroDetails(bookId: widget.livro.id),
-              ),
-            );
+            Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back, size: 32, color: Colors.white),
         ),

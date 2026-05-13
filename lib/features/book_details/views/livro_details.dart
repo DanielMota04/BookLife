@@ -54,7 +54,9 @@ class _LivroDetailsState extends State<LivroDetails> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () => {context.go(Routes.library)},
+          onPressed: () => {
+            context.pop(context)
+            },
           icon: const Icon(Icons.arrow_back, size: 32),
         ),
         actions: [
