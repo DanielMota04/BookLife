@@ -17,71 +17,70 @@ class _WelcomePageState extends State<WelcomePage> {
       backgroundColor: AppColors.jetBlack,
 
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'BookLife',
-              style: TextStyle(
-                fontSize: 50,
-                fontWeight: FontWeight.bold,
-                color: AppColors.white,
-              ),
-            ),
-
-            SizedBox(height: 15),
-
-            Text(
-              'Bem Vindo',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: AppColors.white,
-              ),
-            ),
-
-            SizedBox(height: 25),
-
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                side: BorderSide(color: AppColors.white, width: 3),
-                backgroundColor: AppColors.jetBlack,
-                foregroundColor: AppColors.white,
-                
-                minimumSize: Size(600, 60),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'BookLife',
+                style: TextStyle(
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.white,
+                ),
               ),
 
-              onPressed: () {
-                context.go(Routes.login);
-              },
-              child: Text('Login',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              )
-              ),
-            ),
+              SizedBox(height: 15),
 
-            SizedBox(height: 15),
-
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.lavender,
-                foregroundColor: AppColors.jetBlack,
-                minimumSize: Size(600, 60),
+              Text(
+                'Bem Vindo',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.white,
+                ),
               ),
 
-              onPressed: () {
-                context.go(Routes.register);
-              },
-              child: 
-              Text('Cadastrar',
-               style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),),
-            ),
-          ],
+              SizedBox(height: 25),
+
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  side: BorderSide(color: AppColors.white, width: 3),
+                  backgroundColor: AppColors.jetBlack,
+                  foregroundColor: AppColors.white,
+
+                  minimumSize: Size(600, 60),
+                ),
+
+                onPressed: () {
+                  context.go(Routes.login);
+                },
+                child: Text(
+                  'Login',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+
+              SizedBox(height: 15),
+
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.lavender,
+                  foregroundColor: AppColors.jetBlack,
+                  minimumSize: Size(600, 60),
+                ),
+
+                onPressed: () {
+                  context.go(Routes.register);
+                },
+                child: Text(
+                  'Cadastrar',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
