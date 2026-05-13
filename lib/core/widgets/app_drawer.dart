@@ -24,20 +24,38 @@ class AppDrawer extends StatelessWidget {
           ),
 
           Spacer(),
-          DrawerItem(icon: Icons.settings_outlined, text: 'Ajustes', onTap: () {
-            Navigator.pop(context);
-            context.go(Routes.settings);
-          }),
+          DrawerItem(
+            icon: Icons.settings_outlined,
+            text: 'Ajustes',
+            onTap: () {
+              Navigator.pop(context);
+              context.go(Routes.settings);
+            },
+          ),
           SizedBox(height: 20),
-          DrawerItem(icon: Icons.bar_chart, text: 'Progresso', onTap: () {}), // adicione quando fizer tiver essa página
+          DrawerItem(
+            icon: Icons.bar_chart,
+            text: 'Progresso',
+            onTap: () {
+              Navigator.pop(context);
+              context.go(Routes.progress);
+            },
+          ),
           SizedBox(height: 20),
-          DrawerItem(icon: Icons.flag, text: 'Metas', onTap: () {}), // adicione quando fizer tiver essa página
+          DrawerItem(
+            icon: Icons.flag,
+            text: 'Metas',
+            onTap: () {},
+          ), // adicione quando fizer tiver essa página
           SizedBox(height: 20),
-          DrawerItem(icon: Icons.book_outlined, text: 'Biblioteca', onTap: () {
-            Navigator.pop(context);
-            context.go(Routes.library);
-          }
-        ),
+          DrawerItem(
+            icon: Icons.book_outlined,
+            text: 'Biblioteca',
+            onTap: () {
+              Navigator.pop(context);
+              context.go(Routes.library);
+            },
+          ),
           Spacer(),
         ],
       ),
@@ -46,7 +64,12 @@ class AppDrawer extends StatelessWidget {
 }
 
 class DrawerItem extends StatelessWidget {
-  const DrawerItem({super.key, required this.icon, required this.text, required this.onTap});
+  const DrawerItem({
+    super.key,
+    required this.icon,
+    required this.text,
+    required this.onTap,
+  });
 
   final IconData icon;
   final String text;

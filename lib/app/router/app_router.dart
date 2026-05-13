@@ -1,5 +1,6 @@
 import 'package:book_life/features/library/views/biblioteca.dart';
 import 'package:book_life/features/library/views/cadastrar_livro.dart';
+import 'package:book_life/features/progress/views/meu_progresso.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/settings/views/settings_page.dart';
@@ -35,7 +36,18 @@ final appRouter = GoRouter(
       builder: (context, state) => const ThemesPage(),
     ),
 
-    GoRoute(path: Routes.library, builder: (context, state) => const MinhaBiblioteca()),
-    GoRoute(path: Routes.addBook, builder: (context, state) => const AdicionarLivroPage()),
+    GoRoute(
+      path: Routes.library,
+      builder: (context, state) => const MinhaBiblioteca(),
+    ),
+    GoRoute(
+      path: Routes.addBook,
+      builder: (context, state) => const AdicionarLivroPage(),
+    ),
+
+    GoRoute(
+      path: Routes.progress,
+      builder: (context, state) => const MeuProgressoPage(),
+    ),
   ],
 );

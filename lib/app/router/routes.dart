@@ -6,6 +6,8 @@ class Routes {
   static const library = '/library';
   static const addBook = '/library/add';
 
+  static const progress = '/progress';
+
   static const settings = '/settings';
   static const editProfile = '/settings/profile';
   static const changePassword = '/settings/change-password';

@@ -1,3 +1,4 @@
+import 'package:book_life/core/widgets/app_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -6,28 +7,7 @@ class MeuProgressoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF2F2F2),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF4F7CAC),
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.menu, color: Colors.white, size: 30),
-        ),
-        
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.account_circle,
-              color: Colors.white,
-              size: 30,
-            ),
-          ),
-        ],
-      ),
-
+    return CustomScaffold(
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
