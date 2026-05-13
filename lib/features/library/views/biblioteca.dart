@@ -6,6 +6,7 @@ import 'package:book_life/core/models/book_model.dart';
 import 'package:book_life/core/enums/reading_status.dart';
 import 'package:book_life/features/library/views/cadastrar_livro.dart';
 import 'package:book_life/core/widgets/app_scaffold.dart';
+import 'package:book_life/features/book_details/views/livro_details.dart';
 
 class MinhaBiblioteca extends StatefulWidget {
   const MinhaBiblioteca({super.key});
@@ -115,7 +116,19 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
                     itemCount: livrosFiltrados.length,
                     itemBuilder: (context, index) {
                       final livro = livrosFiltrados[index];
-                      return LivroCard(livro: livro);
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  LivroDetails(bookId: livro.id),
+                            ),
+                          );
+                        },
+
+                        child: LivroCard(livro: livro),
+                      );
                     },
                   ),
           ),
@@ -165,4 +178,3 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
     );
   }
 }
-
