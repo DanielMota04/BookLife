@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 import 'package:book_life/core/constants/app_colors.dart';
+import 'package:book_life/core/widgets/input_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:book_life/core/models/book_model.dart';
 import 'package:book_life/core/enums/reading_status.dart';
-import 'package:book_life/features/library/views/widgets/book_text_field.dart';
 import 'package:book_life/features/library/views/widgets/cover_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -76,7 +76,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
               ),
 
               const SizedBox(height: 10),
-              BookTextField(controller: _isbnController, hint: "..."),
+              InputTextField(controller: _isbnController, hint: "..."),
 
               const SizedBox(height: 18),
               Center(
@@ -107,25 +107,25 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
               ),
 
               const SizedBox(height: 22),
-              BookTextField(
+              InputTextField(
                 controller: _tituloController,
                 hint: "Digite o Título",
               ),
 
               const SizedBox(height: 10),
-              BookTextField(
+              InputTextField(
                 controller: _autorController,
                 hint: "Autor do Livro (Opcional)",
               ),
 
               const SizedBox(height: 10),
-              BookTextField(
+              InputTextField(
                 controller: _editoraController,
                 hint: "Editora (Opcional)",
               ),
 
               const SizedBox(height: 10),
-              BookTextField(
+              InputTextField(
                 controller: _generoController,
                 hint: "Gêneros do Livro (Opcional)",
               ),
