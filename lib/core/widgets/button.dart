@@ -1,6 +1,5 @@
 import 'package:book_life/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class Button extends StatelessWidget {
   
@@ -22,7 +21,7 @@ class Button extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: GoogleFonts.inriaSans(
+          style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Colors.white,

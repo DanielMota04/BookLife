@@ -1,8 +1,6 @@
 import 'dart:typed_data';
-
 import 'package:book_life/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class ImagePickerWidget extends StatelessWidget {
   final Uint8List? imagem;
@@ -32,7 +30,7 @@ class ImagePickerWidget extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             label,
-            style: GoogleFonts.inriaSans(
+            style: TextStyle(
               fontSize: 20,
               color: AppColors.teal,
               fontWeight: FontWeight.w600,

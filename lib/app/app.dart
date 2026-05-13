@@ -1,4 +1,4 @@
-import 'package:book_life/core/constants/app_colors.dart';
+import 'package:book_life/app/app_theme.dart';
 import 'package:flutter/material.dart';
 
 import 'router/app_router.dart';
@@ -10,10 +10,7 @@ class BookLifeApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'BookLife',
-      theme: ThemeData(
-        useMaterial3: true,
-        scaffoldBackgroundColor: AppColors.white,
-      ),
+      theme: AppTheme.light,
       routerConfig: appRouter,
     );
   }

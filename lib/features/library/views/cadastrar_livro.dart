@@ -2,7 +2,6 @@ import 'dart:typed_data';
 import 'package:book_life/core/constants/app_colors.dart';
 import 'package:book_life/core/widgets/input_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:book_life/core/models/book_model.dart';
 import 'package:book_life/core/enums/reading_status.dart';
 import 'package:book_life/features/library/views/widgets/cover_picker.dart';
@@ -59,7 +58,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
               const SizedBox(height: 8),
               Text(
                 "Adicionar Novo Livro",
-                style: GoogleFonts.inriaSans(
+                style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                   color: AppColors.steelBlue,
@@ -69,7 +68,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
               const SizedBox(height: 16),
               Text(
                 "Digite o código ISBN do livro para\nautocompletar os dados",
-                style: GoogleFonts.inriaSans(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
@@ -82,7 +81,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
               Center(
                 child: Text(
                   "ou",
-                  style: GoogleFonts.inriaSans(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -93,7 +92,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
               Center(
                 child: Text(
                   "Adicione manualmente abaixo",
-                  style: GoogleFonts.inriaSans(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),
@@ -133,7 +132,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
               const SizedBox(height: 18),
               Text(
                 "Sinopse (Opcional)",
-                style: GoogleFonts.inriaSans(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: AppColors.jetBlack,
@@ -153,7 +152,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                   expands: true,
                   decoration: InputDecoration(
                     hintText: "Sinopse do livro aqui",
-                    hintStyle: GoogleFonts.inriaSans(color: Colors.grey),
+                    hintStyle: TextStyle(color: Colors.grey),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.all(14),
                   ),
@@ -187,7 +186,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                   ),
                   child: Text(
                     "Salvar",
-                    style: GoogleFonts.inriaSans(
+                    style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,

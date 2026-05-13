@@ -2,7 +2,6 @@ import 'package:book_life/core/constants/app_colors.dart';
 import 'package:book_life/features/library/views/widgets/livro_card_widget.dart';
 import 'package:book_life/features/library/views/widgets/biblioteca_search_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:book_life/core/models/book_model.dart';
 import 'package:book_life/core/enums/reading_status.dart';
 import 'package:book_life/features/library/views/cadastrar_livro.dart';
@@ -84,7 +83,7 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
             padding: const EdgeInsets.all(16),
             child: Text(
               "Minha Biblioteca",
-              style: GoogleFonts.inriaSans(
+              style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
                 color: AppColors.steelBlue,
@@ -155,7 +154,7 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
           color: selecionado ? AppColors.steelBlue : Colors.grey.shade300,
           child: Text(
             texto,
-            style: GoogleFonts.inriaSans(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
               color: selecionado ? Colors.white : Colors.black,
