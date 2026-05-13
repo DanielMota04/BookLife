@@ -1,5 +1,6 @@
 import 'package:book_life/app/router/routes.dart';
 import 'package:book_life/core/constants/app_colors.dart';
+import 'package:book_life/core/widgets/drawer_item.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -63,39 +64,4 @@ class AppDrawer extends StatelessWidget {
   }
 }
 
-class DrawerItem extends StatelessWidget {
-  const DrawerItem({
-    super.key,
-    required this.icon,
-    required this.text,
-    required this.onTap,
-  });
 
-  final IconData icon;
-  final String text;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: AppColors.white),
-          SizedBox(width: 15),
-          Text(
-            text,
-            style: TextStyle(
-              color: AppColors.white,
-              fontSize: 22,
-              fontWeight: FontWeight
-                  .bold, // trocar pela fonte original depois, descobrir como faz
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

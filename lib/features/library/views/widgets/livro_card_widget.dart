@@ -2,7 +2,6 @@ import 'package:book_life/core/constants/app_colors.dart';
 import 'package:book_life/core/enums/reading_status.dart';
 import 'package:book_life/core/models/book_model.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class LivroCard extends StatelessWidget {
   final Book livro;
@@ -61,7 +60,7 @@ class LivroCard extends StatelessWidget {
                     livro.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.inriaSans(
+                    style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -69,12 +68,12 @@ class LivroCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     "de ${livro.author}",
-                    style: GoogleFonts.inriaSans(fontSize: 14),
+                    style: TextStyle(fontSize: 14),
                   ),
                   const SizedBox(height: 18),
                   Text(
                     "Progresso: ${(livro.progressPercentage * 100).toInt()}%",
-                    style: GoogleFonts.inriaSans(
+                    style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
@@ -96,7 +95,7 @@ class LivroCard extends StatelessWidget {
                           const SizedBox(width: 4),
                           Text(
                             livro.rating?.toStringAsFixed(0) ?? '0',
-                            style: GoogleFonts.inriaSans(
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -104,7 +103,7 @@ class LivroCard extends StatelessWidget {
                       ),
                       Text(
                         livro.status.displayName,
-                        style: GoogleFonts.inriaSans(
+                        style: TextStyle(
                           color: AppColors.green,
                           fontWeight: FontWeight.bold,
                         ),

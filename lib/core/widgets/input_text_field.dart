@@ -1,12 +1,11 @@
 import 'package:book_life/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-class BookTextField extends StatelessWidget {
+class InputTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
 
-  const BookTextField({
+  const InputTextField({
     super.key,
     required this.controller,
     required this.hint,
@@ -20,7 +19,7 @@ class BookTextField extends StatelessWidget {
         controller: controller,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: GoogleFonts.inriaSans(
+          hintStyle: TextStyle(
             fontWeight: FontWeight.w600,
             color: Colors.black87,
           ),
