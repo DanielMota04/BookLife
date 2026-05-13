@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:book_life/features/book_details/views/livro_details.dart';
 import 'package:book_life/features/reading_timer/repositories/examples_books.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:book_life/core/models/book_model.dart';
 
 class LivroTimer extends StatefulWidget {
@@ -173,14 +172,16 @@ class _LivroTimerState extends State<LivroTimer> {
             const SizedBox(height: 70),
             Text(
               widget.livro.title,
-              style: GoogleFonts.inriaSans(
-                textStyle: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
               ),
             ),
             Text(
               "de ${widget.livro.author}",
-              style: GoogleFonts.inriaSans(
-                textStyle: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(height: 10),
@@ -189,24 +190,21 @@ class _LivroTimerState extends State<LivroTimer> {
               children: [
                 Text(
                   digitHours,
-                  style: GoogleFonts.inriaSans(
-                    textStyle: const TextStyle(
+                  style: TextStyle(
                       fontSize: 100,
                       color: Colors.white,
                       height: 1,
                       fontWeight: FontWeight.bold,
-                    ),
+                    
                   ),
                 ),
                 Text(
                   ':',
-                  style: GoogleFonts.inriaSans(
-                    textStyle: const TextStyle(
+                  style: TextStyle(
                       fontSize: 100,
                       color: Colors.white,
                       height: 1,
                       fontWeight: FontWeight.bold,
-                    ),
                   ),
                 ),
                 Stack(
@@ -215,29 +213,25 @@ class _LivroTimerState extends State<LivroTimer> {
                   children: [
                     Text(
                       digitMinutes,
-                      style: GoogleFonts.inriaSans(
-                        textStyle: const TextStyle(
+                      style: TextStyle(
                           fontSize: 100,
                           color: Colors.white,
                           height: 1,
                           fontWeight: FontWeight.bold,
-                        ),
                       ),
                     ),
                     Positioned(
                       bottom: -40,
                       child: Text(
                         digitSeconds,
-                        style: GoogleFonts.inriaSans(
-                          textStyle: const TextStyle(
-                            fontSize: 50,
-                            color: Colors.white,
-                            height: 1,
-                            fontWeight: FontWeight.bold,
+                        style: TextStyle(
+                          fontSize: 50,
+                          color: Colors.white,
+                          height: 1,
+                          fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ],
@@ -272,7 +266,7 @@ class _LivroTimerState extends State<LivroTimer> {
                       children: [
                         Text(
                           (!start ? 'INICIAR' : "PARAR"),
-                          style: GoogleFonts.inriaSans(
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -315,7 +309,7 @@ class _LivroTimerState extends State<LivroTimer> {
                       ),
                       child: Text(
                         'VOLTAR',
-                        style: GoogleFonts.inriaSans(
+                        style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -338,12 +332,10 @@ class _LivroTimerState extends State<LivroTimer> {
                 tilePadding: EdgeInsets.symmetric(horizontal: 20),
                 title: Text(
                   'Histórico de Leituras',
-                  style: GoogleFonts.inriaSans(
-                    textStyle: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 children: laps.map((lap) {

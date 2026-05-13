@@ -1,6 +1,5 @@
 import 'package:book_life/core/widgets/app_scaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class MeuProgressoPage extends StatelessWidget {
   const MeuProgressoPage({super.key});
@@ -16,7 +15,7 @@ class MeuProgressoPage extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Text(
                 "Meu Progresso",
-                style: GoogleFonts.inriaSans(
+                style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                   color: const Color(0xFF4F7CAC),
@@ -46,7 +45,7 @@ class MeuProgressoPage extends StatelessWidget {
                         children: [
                           Text(
                             "Username",
-                            style: GoogleFonts.inriaSans(
+                            style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -65,7 +64,7 @@ class MeuProgressoPage extends StatelessWidget {
                               const SizedBox(width: 4),
                               Text(
                                 "2",
-                                style: GoogleFonts.inriaSans(
+                                style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
@@ -101,7 +100,7 @@ class MeuProgressoPage extends StatelessWidget {
                 children: [
                   Text(
                     "Missões Completas",
-                    style: GoogleFonts.inriaSans(
+                    style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFF4F7CAC),
@@ -133,7 +132,7 @@ class MeuProgressoPage extends StatelessWidget {
                 children: [
                   Text(
                     "Missões Disponíveis",
-                    style: GoogleFonts.inriaSans(
+                    style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFF4F7CAC),
@@ -166,7 +165,7 @@ class MeuProgressoPage extends StatelessWidget {
       children: [
         Text(
           numero,
-          style: GoogleFonts.inriaSans(
+          style: TextStyle(
             fontSize: 50,
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -174,7 +173,7 @@ class MeuProgressoPage extends StatelessWidget {
         ),
         Text(
           texto,
-          style: GoogleFonts.inriaSans(
+          style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
             color: Colors.white,
@@ -193,7 +192,7 @@ class MeuProgressoPage extends StatelessWidget {
       alignment: Alignment.center,
       child: Text(
         texto,
-        style: GoogleFonts.inriaSans(
+        style: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.bold,
           color: Colors.white,
@@ -238,7 +237,7 @@ class MeuProgressoPage extends StatelessWidget {
                 children: [
                   Text(
                     titulo,
-                    style: GoogleFonts.inriaSans(
+                    style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: completa ? Colors.white : Colors.black,
@@ -248,7 +247,7 @@ class MeuProgressoPage extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     descricao,
-                    style: GoogleFonts.inriaSans(
+                    style: TextStyle(
                       fontSize: 15,
                       color: completa ? Colors.white : Colors.black54,
                     ),

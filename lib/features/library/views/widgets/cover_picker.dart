@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 import 'package:book_life/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CoverPicker extends StatelessWidget {
   final Uint8List? imagem;
@@ -34,7 +33,7 @@ class CoverPicker extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       "Capa do livro",
-                      style: GoogleFonts.inriaSans(
+                      style: TextStyle(
                         fontSize: 16,
                         color: AppColors.teal,
                         fontWeight: FontWeight.w600,
