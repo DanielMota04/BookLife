@@ -1,3 +1,4 @@
+import 'package:book_life/features/auth/views/register_page.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/settings/views/settings_page.dart';
@@ -13,6 +14,9 @@ final appRouter = GoRouter(
     return null;
   },
   routes: [
+    GoRoute(path: Routes.register,
+      builder: (context, state) => const RegisterPage(),
+      ),
     GoRoute(
       path: Routes.settings,
       builder: (context, state) => const SettingsPage(),
