@@ -1,5 +1,6 @@
 import 'package:book_life/app/router/routes.dart';
 import 'package:book_life/core/constants/app_colors.dart';
+import 'package:book_life/features/auth/views/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -168,7 +169,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const RegisterPage(),
+                          builder: (context) => const LoginPage(),
                         ),
                       );
                       context.go(Routes.login);
