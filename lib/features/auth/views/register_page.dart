@@ -1,4 +1,7 @@
+import 'package:book_life/app/router/routes.dart';
+import 'package:book_life/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -25,7 +28,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0XFF022B3A),
+      backgroundColor:AppColors.jetBlack,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
 
@@ -36,20 +39,31 @@ class _RegisterPageState extends State<RegisterPage> {
             Container(
               padding: EdgeInsets.all(40),
               decoration: BoxDecoration(
-                color: Color(0XFFBFDBF7),
+                color: AppColors.paleSky,
                 borderRadius: BorderRadius.circular(12),
               ),
 
               child: Column(
                 children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      onPressed: () => context.go(Routes.welcome),
+                      icon: Icon(Icons.arrow_back, 
+                      color: AppColors.jetBlack),
+                    ),
+                  ),
+
                   Text(
                     'CADASTRO',
                     style: TextStyle(
                       fontSize: 45,
                       fontWeight: FontWeight.bold,
-                      color: Color(0XFF022B3A),
+                      color: AppColors.jetBlack,
                     ),
                   ),
+
+                  SizedBox(height: 15),
 
                   TextField(
                     controller: _nameController,
@@ -57,6 +71,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       labelText: 'Nome Completo',
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       border: UnderlineInputBorder(),
+                      labelStyle: TextStyle(
+                        color: AppColors.jetBlack,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
 
@@ -64,10 +83,16 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   TextField(
                     controller: _emailController,
-                    style: TextStyle(color: Color(0XFF022B3A)),
                     decoration: InputDecoration(
                       labelText: 'E-mail',
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
                       border: UnderlineInputBorder(),
+
+                      labelStyle: TextStyle(
+                        color: AppColors.jetBlack,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
 
@@ -75,11 +100,18 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   TextField(
                     controller: _passwordController,
-                    style: TextStyle(color: Color(0XFF022B3A)),
+                    style: TextStyle(color: AppColors.jetBlack),
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Senha',
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
                       border: UnderlineInputBorder(),
+
+                      labelStyle: TextStyle(
+                        color: AppColors.jetBlack,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
 
@@ -90,7 +122,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Confirmar Senha',
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
                       border: UnderlineInputBorder(),
+
+                      labelStyle: TextStyle(
+                        color: AppColors.jetBlack,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
 
@@ -98,12 +137,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0XFF022B3A),
+                      backgroundColor: AppColors.jetBlack,
                       foregroundColor: Colors.white,
                       minimumSize: Size(600, 60),
                     ),
 
-                    onPressed: () {},
+                    onPressed: () {
+                      context.go(Routes.library);
+                    },
                     child: Text('CRIAR'),
                   ),
 
@@ -111,14 +152,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   Text(
                     'Já possui uma Conta?',
-                    style: TextStyle(color: Color(0xFF000000)),
+                    style: TextStyle(color: AppColors.jetBlack2),
                   ),
 
                   TextButton(
                     style: TextButton.styleFrom(
-                      foregroundColor: const Color.fromARGB(255, 12, 39, 88),
+                      foregroundColor: AppColors.jetBlack,
                       textStyle: const TextStyle(
-                        fontSize: 15,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -130,6 +171,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           builder: (context) => const RegisterPage(),
                         ),
                       );
+                      context.go(Routes.login);
                     },
                     child: const Text('Fazer Login'),
                   ),
