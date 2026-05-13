@@ -1,6 +1,7 @@
 import 'package:book_life/app/router/routes.dart';
 import 'package:book_life/core/widgets/app_scaffold.dart';
 import 'package:book_life/features/settings/views/widgets/page_title_widget.dart';
+import 'package:book_life/features/settings/views/widgets/settings_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -56,33 +57,6 @@ class SettingsPage extends StatelessWidget {
             },
           ),
         ],
-      ),
-    );
-  }
-}
-
-class SettingsItem extends StatelessWidget {
-  const SettingsItem({super.key, required this.text, required this.onTap});
-
-  final String text;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF282828),
-          ),
-        ),
       ),
     );
   }
