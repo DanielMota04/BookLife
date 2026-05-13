@@ -1,3 +1,4 @@
+import 'package:book_life/features/auth/views/login_page.dart';
 import 'package:book_life/features/auth/views/register_page.dart';
 import 'package:book_life/features/library/views/biblioteca.dart';
 import 'package:book_life/features/library/views/cadastrar_livro.dart';
@@ -19,9 +20,14 @@ final appRouter = GoRouter(
     return null;
   },
   routes: [
-    GoRoute(path: Routes.register,
+    GoRoute(
+      path: Routes.login,
+      builder: (context, state) => const LoginPage(),
+    ),
+    GoRoute(
+      path: Routes.register,
       builder: (context, state) => const RegisterPage(),
-      ),
+    ),
     GoRoute(
       path: Routes.settings,
       builder: (context, state) => const SettingsPage(),
