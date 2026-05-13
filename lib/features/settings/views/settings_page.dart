@@ -22,7 +22,7 @@ class SettingsPage extends StatelessWidget {
 
           SettingsItem(
             text: 'Editar Perfil',
-            onTap: () => context.go(Routes.editProfile),
+            onTap: () => context.push(Routes.editProfile),
           ),
 
           SizedBox(height: space),
