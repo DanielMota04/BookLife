@@ -29,7 +29,7 @@ class SettingsPage extends StatelessWidget {
 
           SettingsItem(
             text: 'Alterar Senha',
-            onTap: () => context.go(Routes.changePassword),
+            onTap: () => context.push(Routes.changePassword),
           ),
 
           SizedBox(height: space),
@@ -41,11 +41,11 @@ class SettingsPage extends StatelessWidget {
 
           SizedBox(height: space),
 
-          SettingsItem(text: 'Temas', onTap: () => context.go(Routes.themes)),
+          SettingsItem(text: 'Temas', onTap: () => context.push(Routes.themes)),
 
           SizedBox(height: space),
 
-          SettingsItem(text: 'Sobre', onTap: () => context.go(Routes.about)),
+          SettingsItem(text: 'Sobre', onTap: () => context.push(Routes.about)),
 
           SizedBox(height: space),
 
