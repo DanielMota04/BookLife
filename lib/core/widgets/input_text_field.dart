@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 class InputTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
+  final bool? obscureText;
 
   const InputTextField({
     super.key,
     required this.controller,
     required this.hint,
+    this.obscureText,
   });
 
   @override
@@ -17,6 +19,7 @@ class InputTextField extends StatelessWidget {
       height: 42,
       child: TextField(
         controller: controller,
+        obscureText: obscureText ?? false,
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: TextStyle(
