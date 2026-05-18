@@ -126,13 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
 
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const RegisterPage(),
-                        ),
-                      );
-                      context.go(Routes.login);
+                      context.pop();
                     },
                     child: const Text('Cadastre-se'),
                   ),
