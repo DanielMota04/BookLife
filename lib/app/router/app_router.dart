@@ -27,14 +27,6 @@ final appRouter = GoRouter(
       builder: (context, state) => const WelcomePage(),
     ),
     GoRoute(
-      path: Routes.login,
-      builder: (context, state) => const LoginPage(),
-    ),
-    GoRoute(
-      path: Routes.register,
-      builder: (context, state) => const RegisterPage(),
-    ),
-    GoRoute(
       path: Routes.settings,
       builder: (context, state) => const SettingsPage(),
     ),
