@@ -1,7 +1,7 @@
-import 'package:book_life/app/router/routes.dart';
 import 'package:book_life/core/constants/app_colors.dart';
+import 'package:book_life/features/auth/views/login_page.dart';
+import 'package:book_life/features/auth/views/register_page.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -11,11 +11,32 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
+  void _painel(String tipo) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+    
+      builder: (context) {
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.7,
+            child: 
+            tipo == 'login' 
+            ? const LoginPage() 
+            : const RegisterPage(),
+          ),
+          
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.jetBlack,
-
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -31,7 +52,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 ),
               ),
 
-              SizedBox(height: 15),
+              SizedBox(height: 30),
 
               Text(
                 'Bem Vindo',
@@ -49,13 +70,9 @@ class _WelcomePageState extends State<WelcomePage> {
                   side: BorderSide(color: AppColors.white, width: 3),
                   backgroundColor: AppColors.jetBlack,
                   foregroundColor: AppColors.white,
-
                   minimumSize: Size(600, 60),
                 ),
-
-                onPressed: () {
-                  context.go(Routes.login);
-                },
+                onPressed: () => _painel('login'), 
                 child: Text(
                   'Login',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -70,10 +87,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   foregroundColor: AppColors.jetBlack,
                   minimumSize: Size(600, 60),
                 ),
-
-                onPressed: () {
-                  context.go(Routes.register);
-                },
+                onPressed: () => _painel('register'),
                 child: Text(
                   'Cadastrar',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
