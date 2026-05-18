@@ -24,28 +24,26 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor:AppColors.jetBlack,
-      body: Padding(
+    return Material(
+      color:AppColors.paleSky,
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        
 
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
 
           children: [
+
             Container(
               padding: EdgeInsets.all(40),
-              decoration: BoxDecoration(
-                color: AppColors.paleSky,
-                borderRadius: BorderRadius.circular(12),
-              ),
 
               child: Column(
                 children: [
                   Align(
                     alignment: Alignment.centerLeft,
                     child: IconButton(
-                      onPressed: () => context.go(Routes.welcome),
+                     onPressed: () => context.pop(),
                       icon: Icon(Icons.arrow_back, 
                       color: AppColors.jetBlack),
                     ),
@@ -60,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
 
-                  SizedBox(height: 15),
+                  SizedBox(height: 10),
 
                   TextField(
                     controller: _emailController,
@@ -77,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
 
-                  SizedBox(height: 15),
+                  SizedBox(height: 10),
 
                   TextField(
                     controller: _passwordController,
@@ -111,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: Text('LOGAR'),
                   ),
 
-                  SizedBox(height: 20),
+                  SizedBox(height: 15),
 
                   Text(
                     'Não possui conta ainda?',
