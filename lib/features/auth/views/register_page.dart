@@ -28,10 +28,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor:AppColors.jetBlack,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+    return Material(
+      color:AppColors.paleSky,
+      child: Padding(
+        padding: const EdgeInsets.
+        symmetric(horizontal: 20.0),
 
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -39,17 +40,12 @@ class _RegisterPageState extends State<RegisterPage> {
           children: [
             Container(
               padding: EdgeInsets.all(40),
-              decoration: BoxDecoration(
-                color: AppColors.paleSky,
-                borderRadius: BorderRadius.circular(12),
-              ),
-
               child: Column(
                 children: [
                   Align(
                     alignment: Alignment.centerLeft,
                     child: IconButton(
-                      onPressed: () => context.go(Routes.welcome),
+                      onPressed: () => context.pop(),
                       icon: Icon(Icons.arrow_back, 
                       color: AppColors.jetBlack),
                     ),
@@ -63,8 +59,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       color: AppColors.jetBlack,
                     ),
                   ),
-
-                  SizedBox(height: 15),
 
                   TextField(
                     controller: _nameController,
@@ -80,7 +74,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  SizedBox(height: 15),
+                  SizedBox(height: 25 ),
 
                   TextField(
                     controller: _emailController,
@@ -97,7 +91,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  SizedBox(height: 15),
+                  SizedBox(height: 25),
 
                   TextField(
                     controller: _passwordController,
@@ -116,7 +110,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  SizedBox(height: 15),
+                  SizedBox(height: 25),
 
                   TextField(
                     controller: _confirmPasswordController,
@@ -134,7 +128,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  SizedBox(height: 20),
+                  SizedBox(height: 30),
 
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -149,7 +143,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: Text('CRIAR'),
                   ),
 
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
 
                   Text(
                     'Já possui uma Conta?',
@@ -166,13 +160,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
 
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginPage(),
-                        ),
-                      );
-                      context.go(Routes.login);
+                      context.pop();
                     },
                     child: const Text('Fazer Login'),
                   ),
