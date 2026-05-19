@@ -46,8 +46,11 @@ class AppDrawer extends StatelessWidget {
           DrawerItem(
             icon: Icons.flag,
             text: 'Metas',
-            onTap: () {},
-          ), // adicione quando fizer tiver essa página
+            onTap: () {
+              Navigator.pop(context);
+              context.go(Routes.goals);
+            },
+          ),
           SizedBox(height: 20),
           DrawerItem(
             icon: Icons.book_outlined,
@@ -63,5 +66,3 @@ class AppDrawer extends StatelessWidget {
     );
   }
 }
-
-
