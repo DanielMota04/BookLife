@@ -1,6 +1,4 @@
-import 'package:book_life/features/auth/views/login_page.dart';
 import 'package:book_life/features/book_details/views/livro_details.dart';
-import 'package:book_life/features/auth/views/register_page.dart';
 import 'package:book_life/features/auth/views/welcome_page.dart';
 import 'package:book_life/features/library/views/biblioteca.dart';
 import 'package:book_life/features/library/views/cadastrar_livro.dart';
@@ -16,7 +14,7 @@ import 'routes.dart';
 
 final appRouter = GoRouter(
   initialLocation: Routes
-      .welcome, // mude isso aqui quando quiser testar uma tela (e lembre de voltar ao welcome depois :[ )
+      .welcome,
   redirect: (context, state) {
     // implementar verificação de autenticação quando o auth ja estiver configurado
     return null;
