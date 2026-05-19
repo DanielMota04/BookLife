@@ -4,6 +4,7 @@ import 'package:book_life/features/library/views/biblioteca.dart';
 import 'package:book_life/features/library/views/cadastrar_livro.dart';
 import 'package:book_life/features/progress/views/meu_progresso.dart';
 import 'package:go_router/go_router.dart';
+import 'package:book_life/features/goals/views/metas.dart';
 
 import '../../features/settings/views/settings_page.dart';
 import '../../features/settings/views/edit_profile_page.dart';
@@ -60,6 +61,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: Routes.progress,
       builder: (context, state) => const MeuProgressoPage(),
+    ),
+    GoRoute(
+      path: Routes.goals,
+      builder: (context, state) => const MetasPage(),
     ),
   ],
 );
