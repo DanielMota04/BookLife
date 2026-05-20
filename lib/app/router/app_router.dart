@@ -3,6 +3,7 @@ import 'package:book_life/features/auth/views/welcome_page.dart';
 import 'package:book_life/features/library/views/biblioteca.dart';
 import 'package:book_life/features/library/views/cadastrar_livro.dart';
 import 'package:book_life/features/progress/views/meu_progresso.dart';
+import 'package:book_life/features/settings/views/profile_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:book_life/features/goals/views/metas.dart';
 
@@ -42,7 +43,10 @@ final appRouter = GoRouter(
       path: Routes.themes,
       builder: (context, state) => const ThemesPage(),
     ),
-
+GoRoute(
+  path: Routes.profile,
+  builder: (context, state) => const ProfilePage(),
+),
     GoRoute(
       path: Routes.library,
       builder: (context, state) => const MinhaBiblioteca(),

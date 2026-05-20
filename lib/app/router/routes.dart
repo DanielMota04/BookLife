@@ -10,10 +10,11 @@ class Routes {
   static const goals = '/goals';
 
   static const settings = '/settings';
-  static const editProfile = '/settings/profile';
+  static const editProfile = '/settings/edit-profile';
   static const changePassword = '/settings/change-password';
   static const about = '/settings/about';
   static const themes = '/settings/themes';
+  static const profile = '/settings/profile';
 
   static String bookDetailsOf(String bookId) => '/library/$bookId';
   static String editBookOf(String bookId) => '/library/$bookId/edit';
