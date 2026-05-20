@@ -10,6 +10,10 @@ class WrongPasswordException extends AuthException {
   WrongPasswordException() : super('Senha atual incorreta');
 }
 
+class UserNotLoggedInException extends AuthException {
+  UserNotLoggedInException() : super('Nenhum usuário logado');
+}
+
 class UnknownAuthException extends AuthException {
   final String code;
   UnknownAuthException(this.code) : super('Erro desconhecido');
