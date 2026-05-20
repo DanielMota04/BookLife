@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:book_life/core/enums/reading_status.dart';
 
 class Book {
@@ -10,6 +11,7 @@ class Book {
   final List<String> genres;
   final String? synopsis;
   final String? coverUrl;
+  final Uint8List? coverBytes;
   final int totalPages;
   final int currentPage;
   final ReadingStatus status;
@@ -28,6 +30,7 @@ class Book {
     this.genres = const [],
     this.synopsis,
     this.coverUrl,
+    this.coverBytes,
     required this.totalPages,
     this.currentPage = 0,
     this.status = ReadingStatus.wishlist,
@@ -90,6 +93,7 @@ class Book {
     List<String>? genres,
     String? synopsis,
     String? coverUrl,
+    Uint8List? coverBytes,
     int? totalPages,
     int? currentPage,
     ReadingStatus? status,
@@ -108,6 +112,7 @@ class Book {
       genres: genres ?? this.genres,
       synopsis: synopsis ?? this.synopsis,
       coverUrl: coverUrl ?? this.coverUrl,
+      coverBytes: coverBytes ?? this.coverBytes,
       totalPages: totalPages ?? this.totalPages,
       currentPage: currentPage ?? this.currentPage,
       status: status ?? this.status,

@@ -1,3 +1,4 @@
+import 'package:book_life/app/app_theme.dart';
 import 'package:flutter/material.dart';
 
 import 'router/app_router.dart';
@@ -9,7 +10,7 @@ class BookLifeApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'BookLife',
-      theme: ThemeData(useMaterial3: true),
+      theme: AppTheme.light,
       routerConfig: appRouter,
     );
   }
