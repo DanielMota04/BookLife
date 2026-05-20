@@ -1,9 +1,7 @@
 import 'package:book_life/core/constants/app_colors.dart';
-import 'package:book_life/features/auth/viewmodels/auth_viewmodel.dart';
 import 'package:book_life/features/auth/views/login_page.dart';
 import 'package:book_life/features/auth/views/register_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -13,32 +11,27 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
-void _painel(String tipo) {
-  final loginVm = context.read<LoginViewModel>();
-  final registerVm = context.read<RegisterViewModel>();
-
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    builder: (context) {
-      return MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: loginVm),
-          ChangeNotifierProvider.value(value: registerVm),
-        ],
-        child: ClipRRect(
+  void _painel(String tipo) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+    
+      builder: (context) {
+        return ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+
           child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.6,
-            child: tipo == 'login'
-                ? const LoginPage()
-                : const RegisterPage(),
+            child: 
+            tipo == 'login' 
+            ? const LoginPage() 
+            : const RegisterPage(),
           ),
-        ),
-      );
-    },
-  );
-}
+          
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
