@@ -43,6 +43,7 @@ dependencies:
   http: ^1.2.1
   package_info_plus: ^8.3.0
   url_launcher: ^6.3.1
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:
