@@ -21,7 +21,7 @@ class _WelcomePageState extends State<WelcomePage> {
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
 
           child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.7,
+            height: MediaQuery.of(context).size.height * 0.6,
             child: 
             tipo == 'login' 
             ? const LoginPage() 
@@ -52,7 +52,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 ),
               ),
 
-              SizedBox(height: 30),
+              SizedBox(height: 50),
 
               Text(
                 'Bem Vindo',
