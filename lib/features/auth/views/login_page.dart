@@ -26,12 +26,12 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Material(
       color:AppColors.paleSky,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.
+        symmetric(horizontal: 20.0),
 
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
 
           children: [
 
@@ -58,8 +58,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
 
-                  SizedBox(height: 10),
-
                   TextField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -75,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
 
-                  SizedBox(height: 10),
+                  SizedBox(height: 20),
 
                   TextField(
                     controller: _passwordController,
@@ -109,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: Text('LOGAR'),
                   ),
 
-                  SizedBox(height: 15),
+                  SizedBox(height: 10),
 
                   Text(
                     'Não possui conta ainda?',

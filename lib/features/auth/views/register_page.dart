@@ -30,12 +30,12 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Material(
       color:AppColors.paleSky,
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.
         symmetric(horizontal: 20.0),
 
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
 
           children: [
             Container(
@@ -74,7 +74,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  SizedBox(height: 25 ),
+                  SizedBox(height: 10 ),
 
                   TextField(
                     controller: _emailController,
@@ -91,7 +91,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  SizedBox(height: 25),
+                  SizedBox(height: 10),
 
                   TextField(
                     controller: _passwordController,
@@ -110,7 +110,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  SizedBox(height: 25),
+                  SizedBox(height: 10),
 
                   TextField(
                     controller: _confirmPasswordController,
@@ -128,7 +128,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  SizedBox(height: 30),
+                  SizedBox(height: 10),
 
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
