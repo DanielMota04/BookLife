@@ -1,8 +1,11 @@
 import 'package:book_life/app/router/routes.dart';
 import 'package:book_life/core/constants/app_colors.dart';
-import 'package:book_life/features/auth/views/register_page.dart';
+import 'package:book_life/features/auth/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -24,17 +27,16 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final viewmodel = context.watch<LoginViewModel>();
     return Material(
-      color:AppColors.paleSky,
+      color: AppColors.paleSky,
       child: SingleChildScrollView(
-        padding: const EdgeInsets.
-        symmetric(horizontal: 20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
 
         child: Column(
           mainAxisSize: MainAxisSize.min,
 
           children: [
-
             Container(
               padding: EdgeInsets.all(40),
 
@@ -43,9 +45,8 @@ class _LoginPageState extends State<LoginPage> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: IconButton(
-                     onPressed: () => context.pop(),
-                      icon: Icon(Icons.arrow_back, 
-                      color: AppColors.jetBlack),
+                      onPressed: () => context.pop(),
+                      icon: Icon(Icons.arrow_back, color: AppColors.jetBlack),
                     ),
                   ),
 
@@ -101,9 +102,27 @@ class _LoginPageState extends State<LoginPage> {
                       minimumSize: Size(600, 60),
                     ),
 
-                    onPressed: () {
-                      context.go(Routes.library);
-                    },
+                    onPressed: viewmodel.isLoading
+                        ? null
+                        : () async {
+                            await viewmodel.login(
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                            );
+                            if (!mounted) return;
+                            if (viewmodel.errorMessage == null) {
+                              context.go(Routes.library);
+                            }
+                            if (viewmodel.errorMessage != null) {
+                              showTopSnackBar(
+                                Overlay.of(context),
+                                CustomSnackBar.error(
+                                  message: viewmodel.errorMessage!,
+                                ),
+                              );
+                            }
+                          },
+                          
                     child: Text('LOGAR'),
                   ),
 

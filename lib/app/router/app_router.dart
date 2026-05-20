@@ -1,4 +1,5 @@
 import 'package:book_life/features/auth/repositories/auth_repository.dart';
+import 'package:book_life/features/auth/viewmodels/auth_viewmodel.dart';
 import 'package:book_life/features/book_details/views/livro_details.dart';
 import 'package:book_life/features/auth/views/welcome_page.dart';
 import 'package:book_life/features/library/views/biblioteca.dart';
@@ -27,7 +28,26 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(
       path: Routes.welcome,
-      builder: (context, state) => const WelcomePage(),
+      builder: (context, state) => MultiProvider(
+
+        providers: [
+
+          ChangeNotifierProvider(
+            create: (context) => LoginViewModel(
+              AuthRepository(FirebaseAuth.instance, FirebaseFirestore.instance),
+            ),
+          ),
+          
+          ChangeNotifierProvider(
+            create: (context) => RegisterViewModel(
+              AuthRepository(FirebaseAuth.instance, FirebaseFirestore.instance),
+            ),
+          ),
+        ],
+
+        child: const WelcomePage(),
+
+      ),
     ),
 
     // settings

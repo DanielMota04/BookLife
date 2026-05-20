@@ -1,4 +1,5 @@
 import 'package:book_life/core/errors/auth_errors.dart';
+import 'package:book_life/features/auth/models/login_user_model.dart';
 import 'package:book_life/features/auth/models/register_user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,6 +21,13 @@ class AuthRepository {
       'email': data.email,
       'createdAt': DateTime.now(),
     });
+  }
+
+  Future<void> loginUser(LoginUserModel data) async {
+    await _auth.signInWithEmailAndPassword(
+      email: data.email,
+      password: data.password,
+    );
   }
 
   Future<void> changePassword(
