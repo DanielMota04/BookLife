@@ -6,6 +6,10 @@ class AuthException implements Exception {
   String toString() => 'AuthException: $message';
 }
 
+class UnauthorizedException extends AuthException {
+  UnauthorizedException() : super('Usuário não autorizado');
+}
+
 class WrongPasswordException extends AuthException {
   WrongPasswordException() : super('Senha atual incorreta');
 }
