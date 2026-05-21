@@ -168,7 +168,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   Text(
                     'Já possui uma Conta?',
-                    style: TextStyle(color: AppColors.jetBlack2),
+                    style: TextStyle(color: AppColors.jetBlack),
                   ),
 
                   TextButton(
