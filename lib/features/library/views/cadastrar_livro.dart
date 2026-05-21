@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:book_life/core/constants/app_colors.dart';
 import 'package:book_life/core/widgets/input_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:book_life/core/models/book_model.dart';
@@ -37,6 +36,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
       });
     }
   }
+
   void _limparCampos() {
     _tituloController.clear();
     _autorController.clear();
@@ -44,6 +44,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
     _generoController.clear();
     _sinopseController.clear();
   }
+
   void _formatarGeneros(List? subjects) {
     if (subjects == null) {
       _generoController.text = '';
@@ -58,7 +59,10 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
         String g = genero.trim();
         String gLower = g.toLowerCase();
         if (g.isEmpty || g.contains(':') || g.contains('=')) continue;
-        if (gLower.contains('literatura') || gLower.contains('literature') || g.contains('(') || g.contains(')')) {
+        if (gLower.contains('literatura') ||
+            gLower.contains('literature') ||
+            g.contains('(') ||
+            g.contains(')')) {
           continue;
         }
         if (g.length > 1) {
@@ -114,7 +118,9 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
 
         _sinopseController.text = dados['synopsis'] ?? '';
 
-        _autorController.text = dados['authors'] != null ? (dados['authors'] as List).join(', ') : '';
+        _autorController.text = dados['authors'] != null
+            ? (dados['authors'] as List).join(', ')
+            : '';
 
         _formatarGeneros(dados['subjects'] as List?);
         await _baixarCapa(dados['cover_url']);
@@ -133,13 +139,15 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
   }
 
   void _mostrarMensagem(String mensagem) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(mensagem)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(mensagem)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F2F2),
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -158,7 +166,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.steelBlue,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
               const SizedBox(height: 16),
@@ -174,18 +182,20 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                 decoration: InputDecoration(
                   hintText: "Digite o ISBN-13 ou ISBN-10",
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: Theme.of(context).colorScheme.surface,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey.shade500),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
                   ),
-                  focusedBorder: const OutlineInputBorder(
+                  focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                     borderSide: BorderSide(
-                      color: AppColors.steelBlue,
+                      color: Theme.of(context).colorScheme.primary,
                       width: 2,
                     ),
                   ),
@@ -241,12 +251,12 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                 hint: "Gêneros do Livro (Opcional)",
               ),
               const SizedBox(height: 18),
-              const Text(
+              Text(
                 "Sinopse (Opcional)",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.jetBlack,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 10),
@@ -254,15 +264,19 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                 height: 130,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.grey.shade500),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
                 ),
                 child: TextField(
                   controller: _sinopseController,
                   maxLines: null,
                   expands: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: "Sinopse do livro aqui",
-                    hintStyle: TextStyle(color: Colors.grey),
+                    hintStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.all(14),
                   ),
@@ -288,17 +302,17 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                     Navigator.pop(context, novoLivro);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.steelBlue,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Salvar",
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
                   ),
                 ),

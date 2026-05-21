@@ -25,6 +25,8 @@ class AppTheme {
     onPrimary: AppColors.white,
     secondary: AppColors.teal,
     onSecondary: AppColors.white,
+      tertiary:   AppColors.malachite,
+  onTertiary: AppColors.green,
     surface: AppColors.white,
     onSurface: AppColors.jetBlack,
     surfaceContainerHighest: AppColors.lavender,
