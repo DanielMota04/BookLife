@@ -1,11 +1,13 @@
 import 'dart:typed_data';
 import 'package:book_life/core/widgets/button.dart';
+import 'package:book_life/features/settings/viewmodels/update_profile_viewmodel.dart';
 import 'package:book_life/features/settings/views/widgets/edit_user_input.dart';
 import 'package:book_life/features/settings/views/widgets/image_picker_widget.dart';
 import 'package:book_life/features/settings/views/widgets/page_title_widget.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -41,7 +43,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final viewmodel = context.read<UpdateProfileViewmodel>();
+      await viewmodel.loadUserData();
+      _usernameController.text = viewmodel.currentUsername ?? '';
+      _emailController.text = viewmodel.currentEmail ?? '';
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final viewmodel = context.watch<UpdateProfileViewmodel>();
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -78,10 +92,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
               Button(
                 text: 'Salvar',
-                onPressed: () {
-                  // implementar função de salvar alterações depois
-                  context.pop();
-                },
+                onPressed: viewmodel.isLoading
+                    ? null
+                    : () async {
+                        await viewmodel.submit(
+                          _usernameController.text,
+                          _emailController.text,
+                        );
+                        if (!mounted) return;
+
+                        if (viewmodel.isSuccess) {
+                          context.pop();
+                        } else if (viewmodel.errorMessage != null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(viewmodel.errorMessage!),
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.error,
+                            ),
+                          );
+                        }
+                      },
               ),
             ],
           ),

@@ -5,7 +5,9 @@ import 'package:book_life/features/auth/views/welcome_page.dart';
 import 'package:book_life/features/library/views/biblioteca.dart';
 import 'package:book_life/features/library/views/cadastrar_livro.dart';
 import 'package:book_life/features/progress/views/meu_progresso.dart';
+import 'package:book_life/features/settings/repositories/profile_repository.dart';
 import 'package:book_life/features/settings/viewmodels/change_password_viewmodel.dart';
+import 'package:book_life/features/settings/viewmodels/update_profile_viewmodel.dart';
 import 'package:book_life/features/settings/views/profile_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,24 +32,20 @@ final appRouter = GoRouter(
     GoRoute(
       path: Routes.welcome,
       builder: (context, state) => MultiProvider(
-
         providers: [
-
           ChangeNotifierProvider(
             create: (context) => LoginViewModel(
               AuthRepository(FirebaseAuth.instance, FirebaseFirestore.instance),
             ),
           ),
-          
+
           ChangeNotifierProvider(
             create: (context) => RegisterViewModel(
               AuthRepository(FirebaseAuth.instance, FirebaseFirestore.instance),
             ),
           ),
         ],
-
         child: const WelcomePage(),
-
       ),
     ),
 
@@ -58,7 +56,12 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: Routes.editProfile,
-      builder: (context, state) => const EditProfilePage(),
+      builder: (context, state) => ChangeNotifierProvider(
+        create: (_) => UpdateProfileViewmodel(
+          ProfileRepository(FirebaseFirestore.instance, FirebaseAuth.instance),
+        ),
+        child: const EditProfilePage(),
+      ),
     ),
     GoRoute(
       path: Routes.changePassword,
@@ -69,7 +72,10 @@ final appRouter = GoRouter(
         child: const ChangePasswordPage(),
       ),
     ),
-    GoRoute(path: Routes.about, builder: (context, state) => const AboutPage()),
+    GoRoute(
+      path: Routes.about,
+      builder: (context, state) => const AboutPage()
+    ),
     GoRoute(
       path: Routes.themes,
       builder: (context, state) => const ThemesPage(),
