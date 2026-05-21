@@ -11,6 +11,8 @@ class BookLifeApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'BookLife',
       theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.light,
       routerConfig: appRouter,
     );
   }

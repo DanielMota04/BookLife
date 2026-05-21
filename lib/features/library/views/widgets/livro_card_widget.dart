@@ -1,4 +1,3 @@
-import 'package:book_life/core/constants/app_colors.dart';
 import 'package:book_life/core/enums/reading_status.dart';
 import 'package:book_life/core/models/book_model.dart';
 import 'package:flutter/material.dart';
@@ -12,11 +11,11 @@ class LivroCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
+            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.08),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -46,8 +45,13 @@ class LivroCard extends StatelessWidget {
                 : Container(
                     width: 90,
                     height: 130,
-                    color: Colors.grey.shade300,
-                    child: const Icon(Icons.book),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
+                    child: Icon(
+                      Icons.book,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
           ),
           Expanded(
@@ -60,30 +64,21 @@ class LivroCard extends StatelessWidget {
                     livro.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    "de ${livro.author}",
-                    style: TextStyle(fontSize: 14),
-                  ),
+                  Text("de ${livro.author}", style: TextStyle(fontSize: 14)),
                   const SizedBox(height: 18),
                   Text(
                     "Progresso: ${(livro.progressPercentage * 100).toInt()}%",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 6),
                   LinearProgressIndicator(
                     value: livro.progressPercentage,
                     minHeight: 5,
                     borderRadius: BorderRadius.circular(10),
-                    color: AppColors.malachite,
+                    color: Theme.of(context).colorScheme.tertiary,
                   ),
                   const SizedBox(height: 12),
                   Row(
@@ -95,16 +90,14 @@ class LivroCard extends StatelessWidget {
                           const SizedBox(width: 4),
                           Text(
                             livro.rating?.toStringAsFixed(0) ?? '0',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
                       Text(
                         livro.status.displayName,
                         style: TextStyle(
-                          color: AppColors.green,
+                          color: Theme.of(context).colorScheme.tertiary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

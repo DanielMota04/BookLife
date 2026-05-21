@@ -130,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   Text(
                     'Não possui conta ainda?',
-                    style: TextStyle(color: AppColors.jetBlack2),
+                    style: TextStyle(color: AppColors.jetBlack),
                   ),
 
                   TextButton(

@@ -1,5 +1,4 @@
 import 'package:book_life/app/router/routes.dart';
-import 'package:book_life/core/constants/app_colors.dart';
 import 'package:book_life/core/widgets/drawer_item.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -10,7 +9,7 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: AppColors.steelBlue,
+      backgroundColor: Theme.of(context).colorScheme.primary,
       width: MediaQuery.of(context).size.width,
       child: Column(
         children: [
@@ -19,7 +18,7 @@ class AppDrawer extends StatelessWidget {
             child: Builder(
               builder: (context) => IconButton(
                 onPressed: () => Scaffold.of(context).closeDrawer(),
-                icon: const Icon(Icons.close, color: AppColors.white, size: 35),
+                icon: Icon(Icons.close, color: Theme.of(context).colorScheme.onPrimary, size: 35),
               ),
             ),
           ),

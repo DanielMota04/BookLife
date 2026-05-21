@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'package:book_life/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class ImagePickerWidget extends StatelessWidget {
@@ -20,19 +19,19 @@ class ImagePickerWidget extends StatelessWidget {
             height: 130,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white,
-              border: Border.all(color: Colors.grey.shade500),
+              color: Theme.of(context).colorScheme.surface,
+              border: Border.all(color: Theme.of(context).colorScheme.secondary),
             ),
             child: imagem != null
                 ? ClipOval(child: Image.memory(imagem!, fit: BoxFit.cover))
-                : const Icon(Icons.upload, size: 50, color: AppColors.teal),
+                : Icon(Icons.upload, size: 50, color: Theme.of(context).colorScheme.secondary),
           ),
           const SizedBox(height: 8),
           Text(
             label,
             style: TextStyle(
               fontSize: 20,
-              color: AppColors.teal,
+              color: Theme.of(context).colorScheme.secondary,
               fontWeight: FontWeight.w600,
             ),
           ),

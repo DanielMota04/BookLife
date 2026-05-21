@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:ui';
-import 'package:book_life/features/book_details/views/livro_details.dart';
 import 'package:book_life/features/reading_timer/repositories/examples_books.dart';
 import 'package:flutter/material.dart';
 import 'package:book_life/core/models/book_model.dart';
@@ -89,14 +88,18 @@ class _LivroTimerState extends State<LivroTimer> {
       orElse: () => widget.livro,
     );
     return Scaffold(
-      backgroundColor: Color(0xFF4F7CAC),
+      backgroundColor: Theme.of(context).colorScheme.primary,
       appBar: AppBar(
-        backgroundColor: Color(0xFF4F7CAC),
+        backgroundColor: Theme.of(context).colorScheme.primary,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const Icon(Icons.arrow_back, size: 32, color: Colors.white),
+          icon: Icon(
+            Icons.arrow_back,
+            size: 32,
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
         ),
         actions: [
           IconButton(
@@ -112,7 +115,7 @@ class _LivroTimerState extends State<LivroTimer> {
             },
             icon: Icon(
               livroAtualizado.isFavorite ? Icons.star : Icons.star_border,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onPrimary,
               size: 32,
             ),
           ),
@@ -152,7 +155,10 @@ class _LivroTimerState extends State<LivroTimer> {
                       height: 220,
                       width: 160,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Color(0xFF4F7CAC), width: 2),
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2,
+                        ),
                         borderRadius: BorderRadius.circular(10),
                         image: DecorationImage(
                           image: NetworkImage(widget.livro.coverUrl.toString()),
@@ -170,6 +176,7 @@ class _LivroTimerState extends State<LivroTimer> {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
             ),
             Text(
@@ -177,6 +184,7 @@ class _LivroTimerState extends State<LivroTimer> {
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
             ),
             SizedBox(height: 10),
@@ -186,20 +194,19 @@ class _LivroTimerState extends State<LivroTimer> {
                 Text(
                   digitHours,
                   style: TextStyle(
-                      fontSize: 100,
-                      color: Colors.white,
-                      height: 1,
-                      fontWeight: FontWeight.bold,
-                    
+                    fontSize: 100,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    height: 1,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
                   ':',
                   style: TextStyle(
-                      fontSize: 100,
-                      color: Colors.white,
-                      height: 1,
-                      fontWeight: FontWeight.bold,
+                    fontSize: 100,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    height: 1,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 Stack(
@@ -209,10 +216,10 @@ class _LivroTimerState extends State<LivroTimer> {
                     Text(
                       digitMinutes,
                       style: TextStyle(
-                          fontSize: 100,
-                          color: Colors.white,
-                          height: 1,
-                          fontWeight: FontWeight.bold,
+                        fontSize: 100,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        height: 1,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     Positioned(
@@ -221,12 +228,12 @@ class _LivroTimerState extends State<LivroTimer> {
                         digitSeconds,
                         style: TextStyle(
                           fontSize: 50,
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onPrimary,
                           height: 1,
                           fontWeight: FontWeight.bold,
-                          ),
                         ),
                       ),
+                    ),
                   ],
                 ),
               ],
@@ -241,16 +248,18 @@ class _LivroTimerState extends State<LivroTimer> {
                   ElevatedButton(
                     onPressed: () => {(!start) ? startTimer() : stopTimer()},
                     style: ElevatedButton.styleFrom(
-                      side: const BorderSide(
-                        color: Color(0xFFE022B3A),
+                      side: BorderSide(
+                        color: (!start)
+                            ? Theme.of(context).colorScheme.tertiary
+                            : Theme.of(context).colorScheme.error,
                         width: 2.0,
                       ),
                       backgroundColor: (!start)
-                          ? Color(0xFF22C55E)
-                          : Color.fromARGB(253, 206, 13, 13),
+                          ? Theme.of(context).colorScheme.tertiary
+                          : Theme.of(context).colorScheme.error,
                       foregroundColor: (!start)
-                          ? Color(0xFFE022B3A)
-                          : Colors.white,
+                          ? Theme.of(context).colorScheme.onTertiary
+                          : Theme.of(context).colorScheme.onError,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18),
                       ),
@@ -278,9 +287,13 @@ class _LivroTimerState extends State<LivroTimer> {
                       },
                       icon: Icon(Icons.flag),
                       style: IconButton.styleFrom(
-                        foregroundColor: Colors.white,
+                        foregroundColor: Theme.of(
+                          context,
+                        ).colorScheme.onPrimary,
                         iconSize: 30,
-                        side: BorderSide(color: Colors.white),
+                        side: BorderSide(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
                       ),
                     ),
                     SizedBox(width: 10),
@@ -291,12 +304,16 @@ class _LivroTimerState extends State<LivroTimer> {
                         resetTimer();
                       },
                       style: ElevatedButton.styleFrom(
-                        side: const BorderSide(
-                          color: Color(0xFFE022B3A),
-                          width: 2.0,
+                        side: BorderSide(
+                          color: Theme.of(context).colorScheme.inverseSurface,
+                          width: 2,
                         ),
-                        backgroundColor: Color(0xFFE022B3A),
-                        foregroundColor: Colors.white,
+                        backgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.inverseSurface,
+                        foregroundColor: Theme.of(
+                          context,
+                        ).colorScheme.onInverseSurface,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18),
                         ),
@@ -316,19 +333,23 @@ class _LivroTimerState extends State<LivroTimer> {
             ),
 
             SizedBox(height: 20),
-            Divider(color: Colors.white),
+            Divider(color: Theme.of(context).colorScheme.onPrimary),
 
             SizedBox(
               width: double.infinity,
               child: ExpansionTile(
-                shape: const Border(bottom: BorderSide(color: Colors.white)),
-                iconColor: Colors.white,
-                collapsedIconColor: Colors.white,
+                shape: Border(
+                  bottom: BorderSide(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+                iconColor: Theme.of(context).colorScheme.onPrimary,
+                collapsedIconColor: Theme.of(context).colorScheme.onPrimary,
                 tilePadding: EdgeInsets.symmetric(horizontal: 20),
                 title: Text(
                   'Histórico de Leituras',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onPrimary,
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
@@ -336,7 +357,7 @@ class _LivroTimerState extends State<LivroTimer> {
                 children: laps.map((lap) {
                   return SizedBox(
                     height: 60,
-                    
+
                     width: double.infinity,
                     child: Padding(
                       padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
@@ -345,11 +366,17 @@ class _LivroTimerState extends State<LivroTimer> {
                         children: [
                           Text(
                             lap['tempo']!,
-                            style: TextStyle(fontSize: 22, color: Colors.white),
+                            style: TextStyle(
+                              fontSize: 22,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
                           ),
                           Text(
                             lap['date']!,
-                            style: TextStyle(fontSize: 15, color: Colors.white),
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
                           ),
                         ],
                       ),
