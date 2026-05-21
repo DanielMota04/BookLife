@@ -1,4 +1,3 @@
-import 'package:book_life/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class PageTitle extends StatelessWidget {
@@ -12,8 +11,8 @@ class PageTitle extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
       child: Text(
         title,
-        style: const TextStyle(
-          color: AppColors.steelBlue,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.primary,
           fontSize: 24,
           fontWeight: FontWeight.bold,
       ),

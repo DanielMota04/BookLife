@@ -12,7 +12,7 @@ class BookLifeApp extends StatelessWidget {
       title: 'BookLife',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       routerConfig: appRouter,
     );
   }
