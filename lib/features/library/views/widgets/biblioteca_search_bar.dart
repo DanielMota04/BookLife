@@ -21,7 +21,9 @@ class BibliotecaSearchBar extends StatelessWidget {
               height: 45,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.grey.shade500),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.outline,
+                ),
               ),
               child: TextField(
                 controller: controller,
@@ -38,7 +40,11 @@ class BibliotecaSearchBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          const Icon(Icons.filter_alt_outlined, size: 32),
+          Icon(
+            Icons.filter_alt_outlined,
+            size: 32,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
         ],
       ),
     );

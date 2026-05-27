@@ -1,4 +1,3 @@
-import 'package:book_life/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class Button extends StatelessWidget {
@@ -16,7 +15,7 @@ class Button extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.steelBlue,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         ),
         child: Text(
@@ -24,7 +23,7 @@ class Button extends StatelessWidget {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.onPrimary,
           ),
         ),
       ),

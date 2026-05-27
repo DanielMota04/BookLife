@@ -1,4 +1,3 @@
-import 'package:book_life/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -22,13 +21,13 @@ class DrawerItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: AppColors.white),
+          Icon(icon, color: Theme.of(context).colorScheme.onPrimary),
           SizedBox(width: 15),
           Text(
             text,
             style: GoogleFonts.aDLaMDisplay(
               fontSize: 22,
-              color: AppColors.white,
+              color: Theme.of(context).colorScheme.onPrimary,
             ),
           ),
         ],

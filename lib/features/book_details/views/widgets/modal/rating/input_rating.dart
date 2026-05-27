@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AvaliacaoPicker extends StatefulWidget {
   final int avaliacaoInicial;
-  final ValueChanged<int> onChanged;
+  final ValueSetter<int> onChanged;
 
   const AvaliacaoPicker({
     super.key,
@@ -29,9 +29,7 @@ class _AvaliacaoPickerState extends State<AvaliacaoPicker> {
   void _abrirBottomSheet() {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      
       builder: (context) {
         return AvaliacaoSelectorSheet(
           avaliacaoSelecionada: _avaliacaoSelecionada,

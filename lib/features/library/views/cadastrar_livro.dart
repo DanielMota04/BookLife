@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:book_life/core/constants/app_colors.dart';
-import 'package:book_life/core/widgets/input_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:book_life/core/models/book_model.dart';
-import 'package:book_life/core/enums/reading_status.dart';
-import 'package:book_life/features/library/views/widgets/cover_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:book_life/core/widgets/input_text_field.dart';
+import 'package:book_life/core/enums/reading_status.dart';
+import 'package:book_life/features/library/views/widgets/cover_picker.dart';
 
 class AdicionarLivroPage extends StatefulWidget {
   const AdicionarLivroPage({super.key});
@@ -23,6 +24,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
   final TextEditingController _editoraController = TextEditingController();
   final TextEditingController _generoController = TextEditingController();
   final TextEditingController _sinopseController = TextEditingController();
+  
   Uint8List? _imagemLivro;
   bool _carregarISBN = false;
 
@@ -37,6 +39,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
       });
     }
   }
+
   void _limparCampos() {
     _tituloController.clear();
     _autorController.clear();
@@ -44,6 +47,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
     _generoController.clear();
     _sinopseController.clear();
   }
+
   void _formatarGeneros(List? subjects) {
     if (subjects == null) {
       _generoController.text = '';
@@ -58,7 +62,10 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
         String g = genero.trim();
         String gLower = g.toLowerCase();
         if (g.isEmpty || g.contains(':') || g.contains('=')) continue;
-        if (gLower.contains('literatura') || gLower.contains('literature') || g.contains('(') || g.contains(')')) {
+        if (gLower.contains('literatura') ||
+            gLower.contains('literature') ||
+            g.contains('(') ||
+            g.contains(')')) {
           continue;
         }
         if (g.length > 1) {
@@ -109,12 +116,11 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
       if (resposta.statusCode == 200) {
         final dados = jsonDecode(resposta.body);
         _tituloController.text = dados['title'] ?? '';
-
         _editoraController.text = dados['publisher'] ?? '';
-
         _sinopseController.text = dados['synopsis'] ?? '';
-
-        _autorController.text = dados['authors'] != null ? (dados['authors'] as List).join(', ') : '';
+        _autorController.text = dados['authors'] != null
+            ? (dados['authors'] as List).join(', ')
+            : '';
 
         _formatarGeneros(dados['subjects'] as List?);
         await _baixarCapa(dados['cover_url']);
@@ -136,10 +142,62 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(mensagem)));
   }
 
+  Future<void> _salvarLivro() async {
+    if (_tituloController.text.trim().isEmpty) {
+      _mostrarMensagem("O título é obrigatório.");
+      return;
+    }
+
+    final usuarioLogado = FirebaseAuth.instance.currentUser;
+    if (usuarioLogado == null) {
+      _mostrarMensagem("Erro: Você precisa estar logado para salvar um livro.");
+      return;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      String? base64Image;
+      if (_imagemLivro != null) {
+        base64Image = base64Encode(_imagemLivro!);
+      }
+
+      final bookData = {
+        'userId': usuarioLogado.uid,
+        'title': _tituloController.text,
+        'author': _autorController.text,
+        'publisher': _editoraController.text,
+        'genres': _generoController.text,
+        'synopsis': _sinopseController.text,
+        'totalPages': 0,
+        'currentPage': 0,
+        'status': ReadingStatus.reading.name, 
+        'coverBase64': base64Image,
+        'addedAt': FieldValue.serverTimestamp(),
+      };
+
+      await FirebaseFirestore.instance.collection('books').add(bookData);
+
+      if (mounted) {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.pop(context); 
+        _mostrarMensagem("Erro ao salvar: $e");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F2F2),
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -158,7 +216,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.steelBlue,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
               const SizedBox(height: 16),
@@ -174,18 +232,20 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                 decoration: InputDecoration(
                   hintText: "Digite o ISBN-13 ou ISBN-10",
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: Theme.of(context).colorScheme.surface,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey.shade500),
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
                     borderSide: BorderSide(
-                      color: AppColors.steelBlue,
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(Radius.circular(12)),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
                       width: 2,
                     ),
                   ),
@@ -241,12 +301,12 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                 hint: "Gêneros do Livro (Opcional)",
               ),
               const SizedBox(height: 18),
-              const Text(
+              Text(
                 "Sinopse (Opcional)",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.jetBlack,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 10),
@@ -254,17 +314,21 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                 height: 130,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.grey.shade500),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
                 ),
                 child: TextField(
                   controller: _sinopseController,
                   maxLines: null,
                   expands: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: "Sinopse do livro aqui",
-                    hintStyle: TextStyle(color: Colors.grey),
+                    hintStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(14),
+                    contentPadding: const EdgeInsets.all(14),
                   ),
                 ),
               ),
@@ -273,32 +337,19 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                 width: double.infinity,
                 height: 45,
                 child: ElevatedButton(
-                  onPressed: () {
-                    final novoLivro = Book(
-                      id: DateTime.now().millisecondsSinceEpoch.toString(),
-                      userId: 'temp',
-                      title: _tituloController.text,
-                      author: _autorController.text,
-                      totalPages: 0,
-                      status: ReadingStatus.reading,
-                      coverUrl: null,
-                      coverBytes: _imagemLivro,
-                      addedAt: DateTime.now(),
-                    );
-                    Navigator.pop(context, novoLivro);
-                  },
+                  onPressed: _salvarLivro,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.steelBlue,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Salvar",
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
                   ),
                 ),
