@@ -18,6 +18,7 @@ class LivroDetails extends StatefulWidget {
 }
 
 class _LivroDetailsState extends State<LivroDetails> {
+  
   Future<void> _abrirModalDeProgresso(
     BuildContext context,
     Book livroAtual,
@@ -32,7 +33,7 @@ class _LivroDetailsState extends State<LivroDetails> {
       setState(() {
         int index = mockLivros.indexWhere((l) => l.id == livroAtual.id);
 
-        if (index != -1) {
+        if (index > -1) {
           mockLivros[index] = mockLivros[index].copyWith(
             status: resultado['status'],
             rating: (resultado['rating'] as int).toDouble(),
@@ -99,7 +100,7 @@ class _LivroDetailsState extends State<LivroDetails> {
                 Positioned.fill(
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                    child: Container(color: Colors.black.withOpacity(0.2)),
+                    child: Container(color: Colors.black.withValues(alpha: 0.3)),
                   ),
                 ),
                 Positioned(

@@ -94,7 +94,6 @@ class _FormAtualizarProgresso extends State<FormAtualizarProgresso> {
                           style: GoogleFonts.inriaSans(
                             textStyle: TextStyle(
                               fontSize: 16,
-                              fontWeight: FontWeight.w600,
                               color: Colors.black,
                             ),
                           ),
