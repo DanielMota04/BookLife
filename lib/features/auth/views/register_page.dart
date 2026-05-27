@@ -8,7 +8,8 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+   final VoidCallback? onGoToRegister;
+  const RegisterPage({super.key, this.onGoToRegister});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -181,7 +182,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
 
                     onPressed: () {
-                      context.pop();
+                      widget.onGoToRegister?.call();
                     },
                     child: const Text('Fazer Login'),
                   ),
