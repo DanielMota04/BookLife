@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:book_life/core/widgets/input_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:book_life/core/models/book_model.dart';
-import 'package:book_life/core/enums/reading_status.dart';
-import 'package:book_life/features/library/views/widgets/cover_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:book_life/core/widgets/input_text_field.dart';
+import 'package:book_life/core/enums/reading_status.dart';
+import 'package:book_life/features/library/views/widgets/cover_picker.dart';
 
 class AdicionarLivroPage extends StatefulWidget {
   const AdicionarLivroPage({super.key});
@@ -22,6 +24,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
   final TextEditingController _editoraController = TextEditingController();
   final TextEditingController _generoController = TextEditingController();
   final TextEditingController _sinopseController = TextEditingController();
+  
   Uint8List? _imagemLivro;
   bool _carregarISBN = false;
 
@@ -113,11 +116,8 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
       if (resposta.statusCode == 200) {
         final dados = jsonDecode(resposta.body);
         _tituloController.text = dados['title'] ?? '';
-
         _editoraController.text = dados['publisher'] ?? '';
-
         _sinopseController.text = dados['synopsis'] ?? '';
-
         _autorController.text = dados['authors'] != null
             ? (dados['authors'] as List).join(', ')
             : '';
@@ -139,9 +139,59 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
   }
 
   void _mostrarMensagem(String mensagem) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(mensagem)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(mensagem)));
+  }
+
+  Future<void> _salvarLivro() async {
+    if (_tituloController.text.trim().isEmpty) {
+      _mostrarMensagem("O título é obrigatório.");
+      return;
+    }
+
+    final usuarioLogado = FirebaseAuth.instance.currentUser;
+    if (usuarioLogado == null) {
+      _mostrarMensagem("Erro: Você precisa estar logado para salvar um livro.");
+      return;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      String? base64Image;
+      if (_imagemLivro != null) {
+        base64Image = base64Encode(_imagemLivro!);
+      }
+
+      final bookData = {
+        'userId': usuarioLogado.uid,
+        'title': _tituloController.text,
+        'author': _autorController.text,
+        'publisher': _editoraController.text,
+        'genres': _generoController.text,
+        'synopsis': _sinopseController.text,
+        'totalPages': 0,
+        'currentPage': 0,
+        'status': ReadingStatus.reading.name, 
+        'coverBase64': base64Image,
+        'addedAt': FieldValue.serverTimestamp(),
+      };
+
+      await FirebaseFirestore.instance.collection('books').add(bookData);
+
+      if (mounted) {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.pop(context); 
+        _mostrarMensagem("Erro ao salvar: $e");
+      }
+    }
   }
 
   @override
@@ -193,7 +243,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    borderRadius: const BorderRadius.all(Radius.circular(12)),
                     borderSide: BorderSide(
                       color: Theme.of(context).colorScheme.primary,
                       width: 2,
@@ -278,7 +328,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(14),
+                    contentPadding: const EdgeInsets.all(14),
                   ),
                 ),
               ),
@@ -287,20 +337,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                 width: double.infinity,
                 height: 45,
                 child: ElevatedButton(
-                  onPressed: () {
-                    final novoLivro = Book(
-                      id: DateTime.now().millisecondsSinceEpoch.toString(),
-                      userId: 'temp',
-                      title: _tituloController.text,
-                      author: _autorController.text,
-                      totalPages: 0,
-                      status: ReadingStatus.reading,
-                      coverUrl: null,
-                      coverBytes: _imagemLivro,
-                      addedAt: DateTime.now(),
-                    );
-                    Navigator.pop(context, novoLivro);
-                  },
+                  onPressed: _salvarLivro,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     shape: RoundedRectangleBorder(
