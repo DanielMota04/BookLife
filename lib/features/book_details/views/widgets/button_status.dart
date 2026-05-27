@@ -5,6 +5,7 @@ import 'package:book_life/core/enums/reading_status.dart';
 class BookStatusButton extends StatelessWidget {
   final ReadingStatus status;
   final VoidCallback onPressed;
+  
   const BookStatusButton({
     super.key,
     required this.status,
@@ -58,7 +59,6 @@ class BookStatusButton extends StatelessWidget {
             _buttonText,
             style: GoogleFonts.inriaSans(
               fontSize: 20,
-              fontWeight: FontWeight.w500,
             ),
           ),
           const SizedBox(width: 12),
