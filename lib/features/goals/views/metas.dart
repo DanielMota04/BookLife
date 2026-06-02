@@ -150,20 +150,41 @@ class _MetasPageState extends State<MetasPage> {
                           String rotuloDoProgresso = dadosDaMeta['categoria'] == 'paginas' || dadosDaMeta['categoria'] == 'tempo'
                               ? "${progressoAtualizado.toInt()}/${objetivoFinal.toInt()}"
                               : "${(taxaDeConclusao * 100).toInt()}%";
+                          final String? idDoLivro = dadosDaMeta['livroId'];
+                          if (dadosDaMeta['categoria'] == 'livros' && idDoLivro != null) {
+                            return FutureBuilder<DocumentSnapshot>(
+                              future: FirebaseFirestore.instance.collection('books').doc(idDoLivro).get(),
+                              builder: (context, snapshotDeLivro) {
+                                String? capaBase64;
+                                
+                                if (snapshotDeLivro.hasData && snapshotDeLivro.data!.exists) {
+                                  final dadosDoLivro = snapshotDeLivro.data!.data() as Map<String, dynamic>;
+                                  capaBase64 = dadosDoLivro['coverBase64'];
+                                }
 
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 14),
+                                  child: MetaCard(
+                                    titulo: dadosDaMeta['titulo'] ?? 'Sem título',
+                                    progresso: rotuloDoProgresso,
+                                    progressoValor: taxaDeConclusao,
+                                    icone: Icons.menu_book,
+                                    imagem: capaBase64 ?? dadosDaMeta['imagem'], // Usa a do livro, senão cai na salva na própria meta
+                                    onTap: () => _exibirModalDeEdicao(documentoMeta.id, dadosDaMeta),
+                                  ),
+                                );
+                              },
+                            );
+                          }                      
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 14),
                             child: MetaCard(
                               titulo: dadosDaMeta['titulo'] ?? 'Sem título',
                               progresso: rotuloDoProgresso,
                               progressoValor: taxaDeConclusao,
-                              icone: dadosDaMeta['categoria'] == 'livros'
-                                  ? Icons.menu_book
-                                  : Icons.flag_outlined,
+                              icone: Icons.flag_outlined,
                               imagem: dadosDaMeta['imagem'],
-                              onTap: () {
-                                _exibirModalDeEdicao(documentoMeta.id, dadosDaMeta);
-                              },
+                              onTap: () => _exibirModalDeEdicao(documentoMeta.id, dadosDaMeta),
                             ),
                           );
                         },
