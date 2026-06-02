@@ -1,16 +1,12 @@
-import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:book_life/core/models/book_model.dart';
-import 'package:book_life/core/enums/reading_status.dart';
 import 'package:book_life/core/widgets/app_scaffold.dart';
 import 'package:book_life/features/library/views/cadastrar_livro.dart';
 import 'package:book_life/features/library/views/widgets/livro_card_widget.dart';
 import 'package:book_life/features/library/views/widgets/biblioteca_search_bar.dart';
 import 'package:book_life/features/book_details/views/livro_details.dart';
+import 'package:book_life/features/library/viewmodels/biblioteca_viewmodel.dart';
 
 class MinhaBiblioteca extends StatefulWidget {
   const MinhaBiblioteca({super.key});
@@ -20,16 +16,14 @@ class MinhaBiblioteca extends StatefulWidget {
 }
 
 class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
+  final BibliotecaViewModel _viewModel = BibliotecaViewModel();
   final TextEditingController _searchController = TextEditingController();
 
-  String _pesquisa = '';
-  String _filtroAtual = 'Todos';
-
-  ReadingStatus _parseStatus(String statusStr) {
-    return ReadingStatus.values.firstWhere(
-      (e) => e.name == statusStr,
-      orElse: () => ReadingStatus.reading,
-    );
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _viewModel.dispose();
+    super.dispose();
   }
 
   @override
@@ -49,100 +43,81 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
               ),
             ),
           ),
+          
           BibliotecaSearchBar(
             controller: _searchController,
-            onChanged: (value) => setState(() => _pesquisa = value),
+            onChanged: _viewModel.atualizarPesquisa,
           ),
+          
           const SizedBox(height: 16),
-          SizedBox(
-            height: 45,
-            child: Row(
-              children: [
-                _buildFiltro("Todos"),
-                _buildFiltro("Lendo"),
-                _buildFiltro("Lido"),
-                _buildFiltro("Em espera"),
-              ],
-            ),
+          
+          // AnimatedBuilder para atualizar apenas as abas de filtro
+          AnimatedBuilder(
+            animation: _viewModel,
+            builder: (context, _) {
+              return SizedBox(
+                height: 45,
+                child: Row(
+                  children: [
+                    _buildAbaDeFiltro("Todos"),
+                    _buildAbaDeFiltro("Lendo"),
+                    _buildAbaDeFiltro("Lido"),
+                    _buildAbaDeFiltro("Em espera"),
+                  ],
+                ),
+              );
+            }
           ),
+          
           const SizedBox(height: 16),
+          
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('books')
-                  .where('userId', isEqualTo: FirebaseAuth.instance.currentUser?.uid)
-                  .orderBy('addedAt', descending: true)
-                  .snapshots(),
+            child: StreamBuilder<List<Book>>(
+              stream: _viewModel.streamDeLivros,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
                 if (snapshot.hasError) {
-                  return Center(child: Text("Erro ao carregar: ${snapshot.error}"));
+                  return Center(child: Text("Erro ao carregar a biblioteca."));
                 }
 
-                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                final livrosDoBanco = snapshot.data;
+                
+                if (livrosDoBanco == null || livrosDoBanco.isEmpty) {
                   return const Center(child: Text("Nenhum livro encontrado."));
                 }
 
-                List<Book> livrosFirestore = snapshot.data!.docs.map((doc) {
-                  final data = doc.data() as Map<String, dynamic>;
-                  Uint8List? coverBytes;
-                  if (data['coverBase64'] != null) {
-                    try {
-                      coverBytes = base64Decode(data['coverBase64']);
-                    } catch (e) {
-                      debugPrint("Erro ao decodificar imagem: $e");
+                // O AnimatedBuilder envolve apenas a lista para reagir na pesquisa e nos filtros instantaneamente
+                return AnimatedBuilder(
+                  animation: _viewModel,
+                  builder: (context, _) {
+                    final livrosParaExibir = _viewModel.aplicarFiltrosNaLista(livrosDoBanco);
+
+                    if (livrosParaExibir.isEmpty) {
+                      return const Center(child: Text("Nenhum livro corresponde à pesquisa."));
                     }
-                  }
 
-                  return Book(
-                    id: doc.id,
-                    userId: data['userId'] ?? '',
-                    title: data['title'] ?? 'Sem Título',
-                    author: data['author'] ?? '',
-                    totalPages: data['totalPages'] ?? 0,
-                    currentPage: data['currentPage'] ?? 0,
-                    status: _parseStatus(data['status'] ?? 'reading'),
-                    coverUrl: null, 
-                    coverBytes: coverBytes,
-                    addedAt: (data['addedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-                  );
-                }).toList();
-
-                List<Book> livrosFiltrados = livrosFirestore.where((livro) {
-                  final pesquisaMatch = livro.title.toLowerCase().contains(
-                    _pesquisa.toLowerCase(),
-                  );
-                  final filtroMatch = _filtroAtual == 'Todos'
-                      ? true
-                      : livro.status.displayName == _filtroAtual;
-
-                  return pesquisaMatch && filtroMatch;
-                }).toList();
-
-                if (livrosFiltrados.isEmpty) {
-                  return const Center(child: Text("Nenhum livro corresponde à pesquisa."));
-                }
-
-                return ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: livrosFiltrados.length,
-                  itemBuilder: (context, index) {
-                    final livro = livrosFiltrados[index];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LivroDetails(bookId: livro.id),
-                          ),
+                    return ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: livrosParaExibir.length,
+                      itemBuilder: (context, index) {
+                        final livro = livrosParaExibir[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LivroDetails(bookId: livro.id),
+                              ),
+                            );
+                          },
+                          child: LivroCard(livro: livro),
                         );
                       },
-                      child: LivroCard(livro: livro),
                     );
-                  },
+                  }
                 );
               },
             ),
@@ -162,26 +137,23 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
     );
   }
 
-  Widget _buildFiltro(String texto) {
-    final bool selecionado = _filtroAtual == texto;
+  Widget _buildAbaDeFiltro(String textoDoFiltro) {
+    final bool estaSelecionado = _viewModel.filtroAtivo == textoDoFiltro;
+    
     return Expanded(
       child: GestureDetector(
-        onTap: () {
-          setState(() {
-            _filtroAtual = texto;
-          });
-        },
+        onTap: () => _viewModel.atualizarFiltro(textoDoFiltro),
         child: Container(
           alignment: Alignment.center,
-          color: selecionado
+          color: estaSelecionado
               ? Theme.of(context).colorScheme.primary
               : Theme.of(context).colorScheme.surfaceContainerHighest,
           child: Text(
-            texto,
+            textoDoFiltro,
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: selecionado
+              color: estaSelecionado
                   ? Theme.of(context).colorScheme.onPrimary
                   : Theme.of(context).colorScheme.onSurface,
             ),
