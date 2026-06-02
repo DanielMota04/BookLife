@@ -16,7 +16,7 @@ class Routes {
   static const themes = '/settings/themes';
   static const profile = '/settings/profile';
 
-  static String bookDetailsOf(String bookId) => '/library/$bookId';
+  static String bookDetailsOf(String book) => '/library/$book';
   static String editBookOf(String bookId) => '/library/$bookId/edit';
   static String collectionDetailsOf(String collectionId) =>
       '/collections/$collectionId';

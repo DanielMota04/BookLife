@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:ui';
-import 'package:book_life/features/reading_timer/repositories/examples_books.dart';
 import 'package:book_life/features/reading_timer/viewmodels/timer_livro_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:book_life/core/models/book_model.dart';
@@ -31,6 +30,14 @@ class _LivroTimerState extends State<LivroTimer> {
 
   @override
   Widget build(BuildContext context) {
+    ImageProvider? coverImageProvider;
+
+    if (widget.livro.coverBytes != null && widget.livro.coverBytes!.isNotEmpty) {
+      coverImageProvider = MemoryImage(widget.livro.coverBytes!);
+    } else if (widget.livro.coverUrl != null &&
+        widget.livro.coverUrl!.toString().isNotEmpty) {
+      coverImageProvider = NetworkImage(widget.livro.coverUrl.toString());
+    }
     return ListenableBuilder(
       listenable: _viewModel,
       builder: (context, _) {
@@ -50,9 +57,7 @@ class _LivroTimerState extends State<LivroTimer> {
             ),
             actions: [
               IconButton(
-                onPressed: () {
-                  _viewModel.toggleFavorite();
-                },
+                onPressed: () =>_viewModel.toggleFavorite(),
                 icon: Icon(
                   _viewModel.livro.isFavorite ? Icons.star : Icons.star_border,
                   color: Theme.of(context).colorScheme.onPrimary,
@@ -73,12 +78,12 @@ class _LivroTimerState extends State<LivroTimer> {
                       child: Container(
                         height: 200,
                         decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              widget.livro.coverUrl.toString(),
-                            ),
-                            fit: BoxFit.cover,
-                          ),
+                          image: coverImageProvider != null
+                              ? DecorationImage(
+                                  image: coverImageProvider,
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
                         ),
                       ),
                     ),
@@ -102,12 +107,12 @@ class _LivroTimerState extends State<LivroTimer> {
                               width: 2,
                             ),
                             borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                widget.livro.coverUrl.toString(),
-                              ),
-                              fit: BoxFit.cover,
-                            ),
+                            image: coverImageProvider != null
+                                ? DecorationImage(
+                                    image: coverImageProvider,
+                                    fit: BoxFit.cover,
+                                  )
+                                : null,
                           ),
                         ),
                       ),
@@ -191,7 +196,9 @@ class _LivroTimerState extends State<LivroTimer> {
                     children: [
                       ElevatedButton(
                         onPressed: () => {
-                          (!_viewModel.isRunning) ? _viewModel.startTimer() : _viewModel.stopTimer(),
+                          (!_viewModel.isRunning)
+                              ? _viewModel.startTimer()
+                              : _viewModel.stopTimer(),
                         },
                         style: ElevatedButton.styleFrom(
                           side: BorderSide(

@@ -1,3 +1,4 @@
+import 'package:book_life/core/models/book_model.dart';
 import 'package:book_life/features/auth/repositories/auth_repository.dart';
 import 'package:book_life/features/auth/viewmodels/auth_viewmodel.dart';
 import 'package:book_life/features/book_details/views/livro_details.dart';
@@ -95,10 +96,10 @@ final appRouter = GoRouter(
       builder: (context, state) => const AdicionarLivroPage(),
     ),
     GoRoute(
-      path: '${Routes.library}/:id',
+      path: '${Routes.library}/:name',
       builder: (context, state) {
-        final idLivro = state.pathParameters['id'] ?? '1';
-        return LivroDetails(bookId: idLivro);
+        final livro = state.extra as Book?; 
+        return LivroDetails(book: livro);
       },
     ),
 

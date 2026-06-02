@@ -1,3 +1,4 @@
+import 'package:book_life/app/router/routes.dart';
 import 'package:flutter/material.dart';
 
 import 'package:book_life/core/models/book_model.dart';
@@ -7,6 +8,7 @@ import 'package:book_life/features/library/views/widgets/livro_card_widget.dart'
 import 'package:book_life/features/library/views/widgets/biblioteca_search_bar.dart';
 import 'package:book_life/features/book_details/views/livro_details.dart';
 import 'package:book_life/features/library/viewmodels/biblioteca_viewmodel.dart';
+import 'package:go_router/go_router.dart';
 
 class MinhaBiblioteca extends StatefulWidget {
   const MinhaBiblioteca({super.key});
@@ -43,14 +45,14 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
               ),
             ),
           ),
-          
+
           BibliotecaSearchBar(
             controller: _searchController,
             onChanged: _viewModel.atualizarPesquisa,
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // AnimatedBuilder para atualizar apenas as abas de filtro
           AnimatedBuilder(
             animation: _viewModel,
@@ -66,11 +68,11 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
                   ],
                 ),
               );
-            }
+            },
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           Expanded(
             child: StreamBuilder<List<Book>>(
               stream: _viewModel.streamDeLivros,
@@ -84,7 +86,7 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
                 }
 
                 final livrosDoBanco = snapshot.data;
-                
+
                 if (livrosDoBanco == null || livrosDoBanco.isEmpty) {
                   return const Center(child: Text("Nenhum livro encontrado."));
                 }
@@ -93,10 +95,14 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
                 return AnimatedBuilder(
                   animation: _viewModel,
                   builder: (context, _) {
-                    final livrosParaExibir = _viewModel.aplicarFiltrosNaLista(livrosDoBanco);
+                    final livrosParaExibir = _viewModel.aplicarFiltrosNaLista(
+                      livrosDoBanco,
+                    );
 
                     if (livrosParaExibir.isEmpty) {
-                      return const Center(child: Text("Nenhum livro corresponde à pesquisa."));
+                      return const Center(
+                        child: Text("Nenhum livro corresponde à pesquisa."),
+                      );
                     }
 
                     return ListView.builder(
@@ -106,18 +112,16 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
                         final livro = livrosParaExibir[index];
                         return GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LivroDetails(bookId: livro.id),
-                              ),
+                            context.push(
+                              Routes.bookDetailsOf(livro.title),
+                              extra: livro, 
                             );
                           },
                           child: LivroCard(livro: livro),
                         );
                       },
                     );
-                  }
+                  },
                 );
               },
             ),
@@ -139,7 +143,7 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
 
   Widget _buildAbaDeFiltro(String textoDoFiltro) {
     final bool estaSelecionado = _viewModel.filtroAtivo == textoDoFiltro;
-    
+
     return Expanded(
       child: GestureDetector(
         onTap: () => _viewModel.atualizarFiltro(textoDoFiltro),
