@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:book_life/core/models/book_model.dart';
 import 'package:book_life/features/reading_timer/models/lapModel.dart';
-import 'package:book_life/features/reading_timer/repositories/examples_books.dart';
 import 'package:flutter/foundation.dart';
 
 class LivroTimerViewModel extends ChangeNotifier{
@@ -16,17 +15,9 @@ class LivroTimerViewModel extends ChangeNotifier{
   List<LapModel> laps = [];
 
   LivroTimerViewModel(this.livro){
-    _livroMock();
+    
   }
 
-  void _livroMock(){
-    livro = mockLivros.firstWhere(
-      (b) => b.id == livro.id,
-      orElse: () => livro,
-
-    );
-    notifyListeners();
-  }
 
   void startTimer(){
     isRunning = true;
@@ -91,12 +82,7 @@ class LivroTimerViewModel extends ChangeNotifier{
   bool get hasProgress => _seconds > 0 || _minutes > 0 || _hours > 0;
 
   void toggleFavorite() {
-    int index = mockLivros.indexWhere((l) => l.id == livro.id);
-    if (index != -1) {
-      mockLivros[index] = mockLivros[index].toggleFavorite();
-      livro = mockLivros[index];
-      notifyListeners();
-    }
+    
   }
   
   @override
