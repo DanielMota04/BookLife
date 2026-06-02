@@ -31,7 +31,6 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
   @override
   void initState() {
     super.initState();
-    // Pega as mudancas de estado com mensagens de erro e loading
     _viewModel.addListener(() {
       if (_viewModel.mensagemDeErro != null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -54,7 +53,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
     super.dispose();
   }
 
-  Future<void> _selecionarImagemDaGaleria() async {
+  Future<void> _selecionarImagem() async {
     FilePickerResult? arquivoSelecionado = await FilePicker.platform.pickFiles(
       type: FileType.image,
       withData: true,
@@ -78,10 +77,9 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
     });
   }
 
-  Future<void> _dispararPesquisaPorIsbn() async {
+  Future<void> _pesquisaPorIsbn() async {
     _limparFormulario();
-    FocusScope.of(context).unfocus();
-
+    FocusScope.of(context).unfocus(); 
     final dadosRetornados = await _viewModel.pesquisarLivroPorIsbn(_isbnController.text);
     
     if (dadosRetornados != null) {
@@ -96,7 +94,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
     }
   }
 
-  Future<void> _enviarFormularioDeSalvamento() async {
+  Future<void> _formDeSalvamento() async {
     if (_tituloController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("O título é obrigatório.")));
       return;
@@ -136,7 +134,6 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
       body: SafeArea(
-        // O AnimatedBuilder faz a tela reagir automaticamente ao ViewModel
         child: AnimatedBuilder(
           animation: _viewModel,
           builder: (context, child) {
@@ -169,7 +166,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                   TextField(
                     controller: _isbnController,
                     keyboardType: TextInputType.number,
-                    onSubmitted: (_) => _dispararPesquisaPorIsbn(),
+                    onSubmitted: (_) => _pesquisaPorIsbn(),
                     decoration: InputDecoration(
                       hintText: "Digite o ISBN-13 ou ISBN-10",
                       filled: true,
@@ -193,7 +190,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                             )
                           : IconButton(
                               icon: const Icon(Icons.search),
-                              onPressed: _dispararPesquisaPorIsbn,
+                              onPressed: _pesquisaPorIsbn,
                             ),
                     ),
                   ),
@@ -203,7 +200,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                   const Center(child: Text("Adicione manualmente abaixo", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
                   const SizedBox(height: 16),
                   
-                  CoverPicker(imagem: _imagemLivro, onTap: _selecionarImagemDaGaleria),
+                  CoverPicker(imagem: _imagemLivro, onTap: _selecionarImagem),
                   
                   const SizedBox(height: 22),
                   InputTextField(controller: _tituloController, hint: "Digite o Título"),
@@ -244,7 +241,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                     width: double.infinity,
                     height: 45,
                     child: ElevatedButton(
-                      onPressed: _viewModel.salvandoLivro ? null : _enviarFormularioDeSalvamento,
+                      onPressed: _viewModel.salvandoLivro ? null : _formDeSalvamento,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),

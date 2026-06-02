@@ -52,8 +52,6 @@ class BibliotecaViewModel extends ChangeNotifier {
         return 'Lido';
       case ReadingStatus.wishlist:
         return 'Em espera';
-      default:
-        return '';
     }
   }
 }
