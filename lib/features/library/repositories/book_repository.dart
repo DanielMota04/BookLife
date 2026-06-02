@@ -15,15 +15,13 @@ class BookRepository {
   }
 
   // Busca na API do Hardcover, com isso, traduz e retorna um Map com os dados
-  Future<Map<String, dynamic>?> buscarDadosLivro(
-    String isbnLimpo,
-  ) async {
+  Future<Map<String, dynamic>?> buscarDadosLivro(String isbnLimpo) async {
     List<String> variacoesDoIsbn = _gerarVariacoesDoIsbn(isbnLimpo);
     final arrayDeIsbnsFormatado = jsonEncode(variacoesDoIsbn);
 
-    const tokenDeAutenticacao =
+    const tokenAutenticacao =
         'Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJIYXJkY292ZXIiLCJ2ZXJzaW9uIjoiOCIsImp0aSI6IjJlMTcxMzM1LTIxOGEtNDAwMy05ZjgzLTY4YzFiYWU1ODRlYSIsImFwcGxpY2F0aW9uSWQiOjIsInN1YiI6Ijk5Njk5IiwiYXVkIjoiMSIsImlkIjoiOTk2OTkiLCJsb2dnZWRJbiI6dHJ1ZSwiaWF0IjoxNzc4ODg0MjQ2LCJleHAiOjE4MTA0MjAyNDYsImh0dHBzOi8vaGFzdXJhLmlvL2p3dC9jbGFpbXMiOnsieC1oYXN1cmEtYWxsb3dlZC1yb2xlcyI6WyJ1c2VyIl0sIngtaGFzdXJhLWRlZmF1bHQtcm9sZSI6InVzZXIiLCJ4LWhhc3VyYS1yb2xlIjoidXNlciIsIlgtaGFzdXJhLXVzZXItaWQiOiI5OTY5OSJ9LCJ1c2VyIjp7ImlkIjo5OTY5OX19.QpbCDzDy-HCioc2EAzL_asvki_xvMqmeBcNoihx9_hM';
-    const urlDaApi = 'https://api.hardcover.app/v1/graphql';
+    const urlApi = 'https://api.hardcover.app/v1/graphql';
 
     final queryGraphQL =
         '''
@@ -50,18 +48,18 @@ class BookRepository {
       }
     ''';
 
-    final respostaDaApi = await http.post(
-      Uri.parse(urlDaApi),
+    final respostaApi = await http.post(
+      Uri.parse(urlApi),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': tokenDeAutenticacao,
+        'Authorization': tokenAutenticacao,
       },
       body: jsonEncode({'query': queryGraphQL}),
     );
 
-    if (respostaDaApi.statusCode != 200) return null;
+    if (respostaApi.statusCode != 200) return null;
 
-    final dadosDecodificados = jsonDecode(respostaDaApi.body);
+    final dadosDecodificados = jsonDecode(respostaApi.body);
     if (dadosDecodificados.containsKey('errors')) return null;
 
     final edicoesEncontradas = dadosDecodificados['data']?['editions'] as List?;
@@ -94,14 +92,14 @@ class BookRepository {
     String autor = '';
     String generosFormatados = '';
     String sinopse = '';
-    Uint8List? imagemDaCapa;
+    Uint8List? imagemCapa;
 
     // Extrair Autor
     final listaDeAutores = dadosDoLivro['book']?['contributions'] as List?;
     if (listaDeAutores != null && listaDeAutores.isNotEmpty) {
       autor = listaDeAutores
-          .map((c) => c['author']?['name'])
-          .where((n) => n != null)
+          .map((m) => m['author']?['name'])
+          .where((x) => x != null)
           .join(', ');
     }
 
@@ -109,8 +107,8 @@ class BookRepository {
     final listaDeCategorias = dadosDoLivro['book']?['taggings'] as List?;
     if (listaDeCategorias != null && listaDeCategorias.isNotEmpty) {
       List<String> categoriasEmIngles = listaDeCategorias
-          .map((c) => c['tag']?['tag']?.toString())
-          .where((t) => t != null)
+          .map((m) => m['tag']?['tag']?.toString())
+          .where((x) => x != null)
           .cast<String>()
           .toList();
 
@@ -132,13 +130,13 @@ class BookRepository {
     }
 
     // Trás a imagem da capa do livro
-    final linkDaCapa = dadosDoLivro['image']?['url'];
-    if (linkDaCapa != null) {
+    final linkCapa = dadosDoLivro['image']?['url'];
+    if (linkCapa != null) {
       try {
-        final urlComHttps = linkDaCapa.replaceAll('http:', 'https:');
-        final respostaDaImagem = await http.get(Uri.parse(urlComHttps));
-        if (respostaDaImagem.statusCode == 200) {
-          imagemDaCapa = respostaDaImagem.bodyBytes;
+        final urlHttps = linkCapa.replaceAll('http:', 'https:');
+        final respostaImagem = await http.get(Uri.parse(urlHttps));
+        if (respostaImagem.statusCode == 200) {
+          imagemCapa = respostaImagem.bodyBytes;
         }
       } catch (_) {}
     }
@@ -149,10 +147,11 @@ class BookRepository {
       'editora': editora,
       'generos': generosFormatados,
       'sinopse': sinopse,
-      'capa': imagemDaCapa,
+      'capa': imagemCapa,
     };
   }
 
+  // Traz os generos ja limpos e tradzidos, limitando a 4 generos para nao poluir e evitar erros
   Future<String> _limparETraduzirGeneros(List<String> generosBrutos) async {
     Set<String> generosFiltrados = {};
     for (String generoBruto in generosBrutos) {
@@ -170,7 +169,7 @@ class BookRepository {
             textoLimpo.contains('(') ||
             textoLimpo.contains(')'))
           continue;
-
+        
         if (textoLimpo.length > 1) {
           textoLimpo =
               textoLimpo[0].toUpperCase() +
@@ -213,13 +212,15 @@ class BookRepository {
         .snapshots()
         .map((snapshot) {
           return snapshot.docs.map((doc) {
-            final dadosSanitizados = _sanitizarDadosDoLivro(doc.data());
-            return Book.fromMap(dadosSanitizados, doc.id);
+            final dadosCorrigidos = _corrigirDadosDoLivro(doc.data());
+            return Book.fromMap(dadosCorrigidos, doc.id);
           }).toList();
         });
   }
 
-  Map<String, dynamic> _sanitizarDadosDoLivro(Map<String, dynamic> dadosOriginais) {
+  Map<String, dynamic> _corrigirDadosDoLivro(
+    Map<String, dynamic> dadosOriginais,
+  ) {
     final dadosCorrigidos = Map<String, dynamic>.from(dadosOriginais);
 
     if (dadosCorrigidos['genres'] is String) {
