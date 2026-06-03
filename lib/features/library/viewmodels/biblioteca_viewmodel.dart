@@ -6,7 +6,7 @@ import 'package:book_life/core/enums/reading_status.dart';
 
 class BibliotecaViewModel extends ChangeNotifier {
   final BookRepository _repository = BookRepository();
-  
+
   String termoDePesquisa = '';
   String filtroAtivo = 'Todos';
 
@@ -14,7 +14,7 @@ class BibliotecaViewModel extends ChangeNotifier {
   Stream<List<Book>> get streamDeLivros {
     final usuarioAtual = FirebaseAuth.instance.currentUser;
     if (usuarioAtual == null) return const Stream.empty();
-    
+
     return _repository.obterLivrosDoUsuario(usuarioAtual.uid);
   }
 
@@ -33,10 +33,12 @@ class BibliotecaViewModel extends ChangeNotifier {
   // Lógica para filtrar os livros na memorio
   List<Book> aplicarFiltrosNaLista(List<Book> listaOriginal) {
     return listaOriginal.where((livro) {
-      final passouNaPesquisa = livro.title.toLowerCase().contains(termoDePesquisa);
-      
-      final passouNoFiltroDeAba = filtroAtivo == 'Todos' 
-          ? true 
+      final passouNaPesquisa = livro.title.toLowerCase().contains(
+        termoDePesquisa,
+      );
+
+      final passouNoFiltroDeAba = filtroAtivo == 'Todos'
+          ? true
           : _traduzirStatus(livro.status) == filtroAtivo;
 
       return passouNaPesquisa && passouNoFiltroDeAba;
@@ -52,6 +54,14 @@ class BibliotecaViewModel extends ChangeNotifier {
         return 'Lido';
       case ReadingStatus.wishlist:
         return 'Em espera';
+    }
+  }
+
+  Future<void> deletarLivro(String idDoLivro) async {
+    try {
+      await _repository.deletarLivro(idDoLivro);
+    } catch (e) {
+      debugPrint('Erro ao deletar livro: $e');
     }
   }
 }
