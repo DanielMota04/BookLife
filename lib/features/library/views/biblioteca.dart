@@ -90,8 +90,6 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
                 if (livrosDoBanco == null || livrosDoBanco.isEmpty) {
                   return const Center(child: Text("Nenhum livro encontrado."));
                 }
-
-                // O AnimatedBuilder envolve apenas a lista para reagir na pesquisa e nos filtros instantaneamente
                 return AnimatedBuilder(
                   animation: _viewModel,
                   builder: (context, _) {
@@ -104,20 +102,48 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
                         child: Text("Nenhum livro corresponde à pesquisa."),
                       );
                     }
-
                     return ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       itemCount: livrosParaExibir.length,
                       itemBuilder: (context, index) {
                         final livro = livrosParaExibir[index];
-                        return GestureDetector(
-                          onTap: () {
-                            context.push(
-                              Routes.bookDetailsOf(livro.title),
-                              extra: livro, 
+                        return Dismissible(
+                          key: Key(livro.id), // serve para direcionar o flutter a recarregar a pagina ao remover tal card
+                          direction: DismissDirection.endToStart,
+                          background: Container(
+                            margin: const EdgeInsets.only(
+                              bottom: 14,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.error,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.only(right: 20),
+                            child: Icon(Icons.delete,
+                              color: Theme.of(context).colorScheme.onError,
+                              size: 30,
+                            ),
+                          ),
+                          onDismissed: (direction) {
+                            _viewModel.deletarLivro(livro.id);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('${livro.title} foi removido.'),
+                                behavior: SnackBarBehavior.floating,
+                                duration: const Duration(seconds: 1),
+                              ),
                             );
                           },
-                          child: LivroCard(livro: livro),
+                          child: GestureDetector(
+                            onTap: () {
+                              context.push(
+                                Routes.bookDetailsOf(livro.title),
+                                extra: livro,
+                              );
+                            },
+                            child: LivroCard(livro: livro),
+                          ),
                         );
                       },
                     );

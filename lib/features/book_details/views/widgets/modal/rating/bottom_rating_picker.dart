@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AvaliacaoSelectorSheet extends StatelessWidget {
   final int avaliacaoSelecionada;
-  final ValueSetter<int> onNotaSelected;
+  final ValueChanged<int> onNotaSelected;
 
   const AvaliacaoSelectorSheet({
     super.key,
@@ -28,11 +28,11 @@ class AvaliacaoSelectorSheet extends StatelessWidget {
           const SizedBox(height: 24),
           Wrap(
             spacing: 12,
-            runSpacing: 8,
+            runSpacing: 12,
             alignment: WrapAlignment.center,
-            children: List.generate(11, 
+            children: List.generate(10, 
             (index) {
-              final nota = index ;
+              final nota = index + 1;
               final selecionado = nota == avaliacaoSelecionada;
 
               return InkWell(

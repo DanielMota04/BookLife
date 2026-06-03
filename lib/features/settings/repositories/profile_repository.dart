@@ -9,26 +9,17 @@ class ProfileRepository {
   ProfileRepository(this._firestore, this._auth);
 
   Future<void> updateData({String? username, String? email}) async {
-    final user = _auth.currentUser;
-    if (user == null) throw UserNotLoggedInException();
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) throw UserNotLoggedInException();
 
     try {
-      if (email != null && email.isNotEmpty && email != user.email) {
-        await user.verifyBeforeUpdateEmail(email);
-      }
-
       final data = <String, dynamic>{
         'updatedAt': DateTime.now(),
         if (username != null && username.isNotEmpty) 'nome': username,
         if (email != null && email.isNotEmpty) 'email': email,
       };
 
-      await _firestore.collection('users').doc(user.uid).update(data);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'requires-recent-login') {
-        throw RequiresRecentLoginException();
-      }
-      throw UnknownAuthException(e.code);
+      await _firestore.collection('users').doc(uid).update(data);
     } on FirebaseException catch (e) {
       throw UnknownAuthException(e.code);
     }

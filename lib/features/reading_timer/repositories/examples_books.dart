@@ -1,0 +1,61 @@
+import 'package:book_life/core/models/book_model.dart';
+import 'package:book_life/core/enums/reading_status.dart';
+
+final List<Book> mockLivros = [
+  Book(
+    id: '1',
+    userId: 'user1',
+    title: 'A Metamorfose',
+    author: 'Franz Kafka',
+    isbn: '9788535900958',
+    publisher: 'Companhia das Letras',
+    genres: const ['Ficção Absurda', 'Existencialismo', 'Clássico'],
+    synopsis: 'Gregor Samsa acorda certa manhã de sonhos intranquilos e vê-se em sua cama transformado num inseto monstruoso. A narrativa acompanha a desintegração de suas relações familiares e sua alienação diante de uma nova e bizarra realidade.',
+    coverUrl: 'https://imgs.search.brave.com/PuF1VIxXjxIcrLSSyqTVyFkjg28oPIsRmI4NH9TAfV8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL2lt/YWdlcy9nLzBMQUFB/T1N3TzNCbTNUM0Uv/cy1sNTAwLmpwZw',
+    totalPages: 96,
+    currentPage: 96,
+    status: ReadingStatus.completed,
+    rating: 9.0,
+    isFavorite: false,
+    review: 'Uma exploração profunda sobre a condição humana e o isolamento.',
+    addedAt: DateTime.now(),
+),
+  Book(
+    id: '2',
+    userId: 'user1',
+    title: 'Senhor dos Anéis',
+    author: 'J.R.R. Tolkien',
+    isbn: '9788578277109',
+    publisher: 'WMF Martins Fontes',
+    genres: const ['Fantasia','Aventura','Ficção Mítica'],
+    synopsis: 'A história de O Senhor dos Anéis se passa na Terra-média e narra o conflito entre o bem e o mal, centrado na luta para impedir que o Um Anel, um artefato maligno forjado pelo Senhor Sombrio Sauron, volte às suas mãos.  O protagonista, o hobbit Frodo Bolseiro, recebe o anel de seu tio Bilbo e, com a orientação do mago Gandalf, embarca em uma missão perigosa para destruí-lo nas fornalhas do Monte da Condenação, em Mordor. ',
+    coverUrl: 'https://m.media-amazon.com/images/I/41KWSPU9wcL._SY445_SX342_ML2_.jpg',
+    totalPages: 300,
+    currentPage: 300,
+    status: ReadingStatus.completed,
+    rating: 10.0,
+    isFavorite: false,
+    addedAt: DateTime.now(),
+  ),
+  Book(
+    id: '3',
+    userId: 'user1',
+    title: 'A Divina Comédia',
+    author: 'Dante Alighieri',
+    isbn: '9788573262643',
+    publisher: 'Editora 34',
+    genres: const ['Poesia Epica', 'Literatura Classica', 'Fantasia'],
+    synopsis: 'Uma jornada épica através dos três reinos do além: Inferno, Purgatório e Paraíso. Guiado pelo poeta Virgílio e depois por Beatriz, Dante atravessa as profundezas do pecado até alcançar a luz divina.',
+    coverUrl: 'https://imgs.search.brave.com/BPkPTkpDE8upGW84Lu6Fxwml1zmALSPDcSBcywT7x3A/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMuc2tlZWxvLmNv/bS9yZW1vdGUvMzIw/LzQ4MC8xMDAvaHR0/cHM6Ly9za29vYi5z/My5hbWF6b25hd3Mu/Y29tL2xpdnJvcy82/MDAvQk9YX0FfRElW/SU5BX0NPTURJQV8x/NTc0MzA3MDgxQi5q/cGc',
+    totalPages: 100,
+    currentPage: 60,
+    status: ReadingStatus.reading,
+    rating: 8.0,
+    isFavorite: false,
+    review: 'Um clássico absoluto da literatura mundial.',
+    addedAt: DateTime.now(),
+),
+ 
+  
+
+];

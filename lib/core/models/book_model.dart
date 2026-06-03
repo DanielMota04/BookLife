@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:typed_data';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:book_life/core/enums/reading_status.dart';
 
 class Book {
@@ -122,70 +120,6 @@ class Book {
       isFavorite: isFavorite ?? this.isFavorite,
       review: review ?? this.review,
       addedAt: addedAt ?? this.addedAt,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'userId': userId,
-      'title': title,
-      'author': author,
-      'isbn': isbn,
-      'publisher': publisher,
-      'genres': genres,
-      'synopsis': synopsis,
-      'coverUrl': coverUrl,
-      'coverBase64': coverBytes != null ? base64Encode(coverBytes!) : null,
-      'totalPages': totalPages,
-      'currentPage': currentPage,
-      'status': status.name,
-      'rating': rating,
-      'isFavorite': isFavorite,
-      'review': review,
-      'addedAt': Timestamp.fromDate(addedAt),
-    };
-  }
-
-  factory Book.fromMap(Map<String, dynamic> map, String documentId) {
-    Uint8List? imagemDecodificada;
-    if (map['coverBase64'] != null) {
-      try {
-        imagemDecodificada = base64Decode(map['coverBase64']);
-      } catch (_) {
-      }
-    }
-
-    DateTime dataConvertida = DateTime.now();
-    if (map['addedAt'] is Timestamp) {
-      dataConvertida = (map['addedAt'] as Timestamp).toDate();
-    }
-
-    ReadingStatus statusConvertido = ReadingStatus.reading;
-    if (map['status'] != null) {
-      statusConvertido = ReadingStatus.values.firstWhere(
-        (e) => e.name == map['status'],
-        orElse: () => ReadingStatus.reading,
-      );
-    }
-
-    return Book(
-      id: documentId,
-      userId: map['userId'] ?? '',
-      title: map['title'] ?? 'Sem Título',
-      author: map['author'] ?? '',
-      isbn: map['isbn'],
-      publisher: map['publisher'],
-      genres: List<String>.from(map['genres'] ?? []),
-      synopsis: map['synopsis'],
-      coverUrl: map['coverUrl'],
-      coverBytes: imagemDecodificada,
-      totalPages: map['totalPages']?.toInt() ?? 0,
-      currentPage: map['currentPage']?.toInt() ?? 0,
-      status: statusConvertido,
-      rating: map['rating']?.toDouble(),
-      isFavorite: map['isFavorite'] ?? false,
-      review: map['review'],
-      addedAt: dataConvertida,
     );
   }
 }

@@ -29,8 +29,6 @@ class UpdateProfileViewmodel extends ChangeNotifier {
       _isSuccess = true;
     } on UserNotLoggedInException {
       _errorMessage = 'Usuário não está logado';
-    } on RequiresRecentLoginException {
-      _errorMessage = 'A operação requer login recente';
     } on UnknownAuthException {
       _errorMessage = 'Ocorreu um erro ao tentar atualizar o perfil';
     } catch (e) {
