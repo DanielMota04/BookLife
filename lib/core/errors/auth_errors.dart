@@ -18,6 +18,10 @@ class UserNotLoggedInException extends AuthException {
   UserNotLoggedInException() : super('Nenhum usuário logado');
 }
 
+class RequiresRecentLoginException extends AuthException {
+  RequiresRecentLoginException() : super('A operação requer login recente');
+}
+
 class UnknownAuthException extends AuthException {
   final String code;
   UnknownAuthException(this.code) : super('Erro desconhecido');

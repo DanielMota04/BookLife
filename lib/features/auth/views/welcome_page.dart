@@ -31,8 +31,18 @@ void _painel(String tipo) {
           child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.6,
             child: tipo == 'login'
-                ? const LoginPage()
-                : const RegisterPage(),
+                ? LoginPage(
+                  onGoToRegister: () {
+                    Navigator.of(context).pop();
+                    _painel('register');
+                  },
+                )
+                : RegisterPage(
+                  onGoToRegister: () {
+                    Navigator.of(context).pop();
+                    _painel('login');
+                  },
+                ),
           ),
         ),
       );

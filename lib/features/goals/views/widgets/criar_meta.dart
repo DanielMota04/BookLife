@@ -12,7 +12,7 @@ class CriarMetaModal extends StatefulWidget {
 }
 
 class _CriarMetaModalState extends State<CriarMetaModal> {
-  String? tipoMeta = 'leitura';
+  String? tipoMeta;
   String? categoriaMeta;
   
   String? idDoLivroSelecionado;

@@ -8,7 +8,8 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final VoidCallback? onGoToRegister;
+  const LoginPage({super.key, this.onGoToRegister});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -143,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
 
                     onPressed: () {
-                      context.pop();
+                      widget.onGoToRegister?.call();
                     },
                     child: const Text('Cadastre-se'),
                   ),

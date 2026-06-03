@@ -218,11 +218,6 @@ class BookRepository {
         });
   }
 
-  //Deletar Livros
-  Future<void> deletarLivro(String idDoLivro) async {
-  await _firestore.collection('books').doc(idDoLivro).delete();
-}
-
   Map<String, dynamic> _corrigirDadosDoLivro(
     Map<String, dynamic> dadosOriginais,
   ) {
