@@ -38,12 +38,16 @@ class MeuProgressoPage extends StatelessWidget {
               if (snapshotDeLivros.hasData) {
                 for (var documento in snapshotDeLivros.data!.docs) {
                   final dadosDoLivro = documento.data() as Map<String, dynamic>;
-                  final statusDeLeitura = dadosDoLivro['status'] ?? '';
-                  final paginasLidasNoLivro = (dadosDoLivro['currentPage'] ?? 0) as int;
-
+                  final statusDeLeitura =
+                      dadosDoLivro['status']?.toString().toLowerCase() ?? '';
+                  final paginasLidasNoLivro =
+                      (dadosDoLivro['currentPage'] ?? 0) as int;
                   totalDePaginasLidas += paginasLidasNoLivro;
 
-                  if (statusDeLeitura == 'read' || statusDeLeitura == 'lido') {
+                  if (statusDeLeitura == 'read' ||
+                      statusDeLeitura == 'lido' ||
+                      statusDeLeitura == 'completed' ||
+                      statusDeLeitura.contains('completed')) {
                     totalDeLivrosLidos += 1;
                   }
                 }
@@ -53,7 +57,8 @@ class MeuProgressoPage extends StatelessWidget {
                 for (var documento in snapshotDeMetas.data!.docs) {
                   final dadosDaMeta = documento.data() as Map<String, dynamic>;
                   final alvoDaMeta = (dadosDaMeta['alvo'] ?? 1).toDouble();
-                  final progressoDaMeta = (dadosDaMeta['progressoAtual'] ?? 0).toDouble();
+                  final progressoDaMeta = (dadosDaMeta['progressoAtual'] ?? 0)
+                      .toDouble();
                   final categoriaDaMeta = dadosDaMeta['categoria'] ?? '';
 
                   if (categoriaDaMeta == 'livros') {
