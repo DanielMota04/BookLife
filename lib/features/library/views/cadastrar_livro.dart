@@ -24,9 +24,9 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
   final TextEditingController _autorController = TextEditingController();
   final TextEditingController _editoraController = TextEditingController();
   final TextEditingController _generoController = TextEditingController();
-  final TextEditingController _sinopseController = TextEditingController();
-  
+  final TextEditingController _sinopseController = TextEditingController(); 
   Uint8List? _imagemLivro;
+  int _paginasDoLivro = 0;
 
   @override
   void initState() {
@@ -90,6 +90,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
       _sinopseController.text = dadosRetornados['sinopse'];
       setState(() {
         _imagemLivro = dadosRetornados['capa'];
+        _paginasDoLivro = dadosRetornados['paginas'];
       });
     }
   }
@@ -118,9 +119,9 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
       genres: generosMapeados,
       synopsis: _sinopseController.text.trim().isNotEmpty ? _sinopseController.text.trim() : null,
       coverBytes: _imagemLivro,
-      totalPages: 0,
+      totalPages: _paginasDoLivro,
       addedAt: DateTime.now(),
-      status: ReadingStatus.reading,
+      status: ReadingStatus.wishlist,
     );
 
     final sucesso = await _viewModel.salvarNovoLivro(livroParaSalvar);
