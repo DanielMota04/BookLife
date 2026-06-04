@@ -15,7 +15,6 @@ class MetasPage extends StatefulWidget {
 }
 
 class _MetasPageState extends State<MetasPage> {
-  
   void _exibirModalDeCriacao() {
     showDialog(
       context: context,
@@ -43,8 +42,8 @@ class _MetasPageState extends State<MetasPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
+          const Padding(
+            padding: EdgeInsets.all(16),
             child: Text(
               "Minhas Metas",
               style: TextStyle(
@@ -54,7 +53,6 @@ class _MetasPageState extends State<MetasPage> {
               ),
             ),
           ),
-
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: SizedBox(
@@ -81,16 +79,18 @@ class _MetasPageState extends State<MetasPage> {
                     SizedBox(width: 10),
                     Text(
                       "Adicionar Nova Meta",
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white),
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
           ),
-
           const SizedBox(height: 22),
-
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
@@ -98,9 +98,7 @@ class _MetasPageState extends State<MetasPage> {
               style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
             ),
           ),
-
           const SizedBox(height: 16),
-
           Expanded(
             child: idDoUsuario == null
                 ? const Center(child: Text("Usuário não autenticado."))
@@ -136,31 +134,31 @@ class _MetasPageState extends State<MetasPage> {
                         itemBuilder: (context, index) {
                           final documentoMeta = listaDeMetas[index];
                           final dadosDaMeta = documentoMeta.data() as Map<String, dynamic>;
+                          final objetivoFinal = (dadosDaMeta['alvo'] ?? 1).toDouble();
+                          final categoria = dadosDaMeta['categoria'];
 
-                          double objetivoFinal = (dadosDaMeta['alvo'] ?? 1).toDouble();
-                          double progressoAtualizado = (dadosDaMeta['progressoAtual'] ?? 0).toDouble();
-                          double taxaDeConclusao = 0.0;
-
-                          if (dadosDaMeta['categoria'] == 'livros') {
-                            taxaDeConclusao = (progressoAtualizado / 100).clamp(0.0, 1.0);
-                          } else {
-                            taxaDeConclusao = objetivoFinal > 0 ? (progressoAtualizado / objetivoFinal).clamp(0.0, 1.0) : 0.0;
-                          }
-
-                          String rotuloDoProgresso = dadosDaMeta['categoria'] == 'paginas' || dadosDaMeta['categoria'] == 'tempo'
-                              ? "${progressoAtualizado.toInt()}/${objetivoFinal.toInt()}"
-                              : "${(taxaDeConclusao * 100).toInt()}%";
-                          final String? idDoLivro = dadosDaMeta['livroId'];
-                          if (dadosDaMeta['categoria'] == 'livros' && idDoLivro != null) {
-                            return FutureBuilder<DocumentSnapshot>(
-                              future: FirebaseFirestore.instance.collection('books').doc(idDoLivro).get(),
+                          // Lógica para Meta de Livro Específico
+                          if (categoria == 'livros' && dadosDaMeta['livroId'] != null) {
+                            return StreamBuilder<DocumentSnapshot>(
+                              stream: FirebaseFirestore.instance
+                                  .collection('books')
+                                  .doc(dadosDaMeta['livroId'])
+                                  .snapshots(),
                               builder: (context, snapshotDeLivro) {
+                                double progressoAtualizado = 0;
+                                double objFinalLocal = 1;
                                 String? capaBase64;
-                                
+
                                 if (snapshotDeLivro.hasData && snapshotDeLivro.data!.exists) {
                                   final dadosDoLivro = snapshotDeLivro.data!.data() as Map<String, dynamic>;
                                   capaBase64 = dadosDoLivro['coverBase64'];
+                                  progressoAtualizado = (dadosDoLivro['currentPage'] ?? 0).toDouble();
+                                  objFinalLocal = (dadosDoLivro['totalPages'] ?? 1).toDouble();
+                                  if (objFinalLocal == 0) objFinalLocal = 1;
                                 }
+
+                                final taxaDeConclusao = (progressoAtualizado / objFinalLocal).clamp(0.0, 1.0);
+                                final rotuloDoProgresso = "${(taxaDeConclusao * 100).toInt()}%";
 
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 14),
@@ -169,24 +167,121 @@ class _MetasPageState extends State<MetasPage> {
                                     progresso: rotuloDoProgresso,
                                     progressoValor: taxaDeConclusao,
                                     icone: Icons.menu_book,
-                                    imagem: capaBase64 ?? dadosDaMeta['imagem'], // Usa a do livro, senão cai na salva na própria meta
+                                    imagem: capaBase64 ?? dadosDaMeta['imagem'],
                                     onTap: () => _exibirModalDeEdicao(documentoMeta.id, dadosDaMeta),
                                   ),
                                 );
                               },
                             );
-                          }                      
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 14),
-                            child: MetaCard(
-                              titulo: dadosDaMeta['titulo'] ?? 'Sem título',
-                              progresso: rotuloDoProgresso,
-                              progressoValor: taxaDeConclusao,
-                              icone: Icons.flag_outlined,
-                              imagem: dadosDaMeta['imagem'],
-                              onTap: () => _exibirModalDeEdicao(documentoMeta.id, dadosDaMeta),
-                            ),
-                          );
+                          }
+
+                          // Lógica para Meta de Páginas Diárias
+                          if (categoria == 'paginas') {
+                            final dataDeHoje = DateTime.now().toIso8601String().split('T')[0];
+
+                            return StreamBuilder<QuerySnapshot>(
+                              stream: FirebaseFirestore.instance
+                                  .collectionGroup('reading_history')
+                                  .where('userId', isEqualTo: idDoUsuario)
+                                  .where('date', isEqualTo: dataDeHoje)
+                                  .snapshots(),
+                              builder: (context, snapshotPaginas) {
+                                if (snapshotPaginas.connectionState == ConnectionState.waiting && !snapshotPaginas.hasData) {
+                                  return const Padding(
+                                    padding: EdgeInsets.only(bottom: 14),
+                                    child: Center(child: CircularProgressIndicator()),
+                                  );
+                                }
+
+                                int totalPaginasLidas = 0;
+                                if (snapshotPaginas.hasData) {
+                                  for (var doc in snapshotPaginas.data!.docs) {
+                                    totalPaginasLidas += ((doc.data() as Map<String, dynamic>)['pagesRead'] ?? 0) as int;
+                                  }
+                                }
+
+                                final taxaDeConclusao = objetivoFinal > 0
+                                    ? (totalPaginasLidas / objetivoFinal).clamp(0.0, 1.0)
+                                    : 0.0;
+                                
+                                final paginasParaExibir = totalPaginasLidas > objetivoFinal.toInt()
+                                    ? objetivoFinal.toInt()
+                                    : totalPaginasLidas;
+
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 14),
+                                  child: MetaCard(
+                                    titulo: dadosDaMeta['titulo'] ?? 'Sem título',
+                                    progresso: "$paginasParaExibir/${objetivoFinal.toInt()}",
+                                    progressoValor: taxaDeConclusao,
+                                    icone: Icons.flag_outlined,
+                                    imagem: dadosDaMeta['imagem'],
+                                    onTap: () => _exibirModalDeEdicao(documentoMeta.id, dadosDaMeta),
+                                  ),
+                                );
+                              },
+                            );
+                          }
+
+                          // Lógica para Meta de Tempo Diário
+                          if (categoria == 'tempo') {
+                            final hoje = DateTime.now();
+                            final inicioDoDia = DateTime(hoje.year, hoje.month, hoje.day);
+
+                            return StreamBuilder<QuerySnapshot>(
+                              stream: FirebaseFirestore.instance
+                                  .collectionGroup('laps')
+                                  .where('userId', isEqualTo: idDoUsuario)
+                                  .where('createdAt', isGreaterThanOrEqualTo: Timestamp.fromDate(inicioDoDia))
+                                  .snapshots(),
+                              builder: (context, snapshotTempo) {
+                                if (snapshotTempo.connectionState == ConnectionState.waiting && !snapshotTempo.hasData) {
+                                  return const Padding(
+                                    padding: EdgeInsets.only(bottom: 14),
+                                    child: Center(child: CircularProgressIndicator()),
+                                  );
+                                }
+
+                                int totalSegundos = 0;
+                                if (snapshotTempo.hasData) {
+                                  for (var doc in snapshotTempo.data!.docs) {
+                                    totalSegundos += ((doc.data() as Map<String, dynamic>)['durationInSeconds'] ?? 0) as int;
+                                  }
+                                }
+
+                                final tituloMeta = (dadosDaMeta['titulo'] ?? '').toLowerCase();
+                                double progressoTempo = totalSegundos / 60; // Padrão: minutos
+
+                                if (tituloMeta.contains('segundos')) {
+                                  progressoTempo = totalSegundos.toDouble();
+                                } else if (tituloMeta.contains('horas')) {
+                                  progressoTempo = totalSegundos / 3600;
+                                }
+
+                                final taxaDeConclusao = objetivoFinal > 0
+                                    ? (progressoTempo / objetivoFinal).clamp(0.0, 1.0)
+                                    : 0.0;
+                                
+                                final progressoParaExibir = progressoTempo > objetivoFinal 
+                                    ? objetivoFinal 
+                                    : progressoTempo;
+
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 14),
+                                  child: MetaCard(
+                                    titulo: dadosDaMeta['titulo'] ?? 'Sem título',
+                                    progresso: "${progressoParaExibir.toInt()}/${objetivoFinal.toInt()}",
+                                    progressoValor: taxaDeConclusao,
+                                    icone: Icons.timer_outlined,
+                                    imagem: dadosDaMeta['imagem'],
+                                    onTap: () => _exibirModalDeEdicao(documentoMeta.id, dadosDaMeta),
+                                  ),
+                                );
+                              },
+                            );
+                          }
+
+                          return const SizedBox.shrink();
                         },
                       );
                     },

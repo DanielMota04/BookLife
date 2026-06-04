@@ -51,30 +51,41 @@ class BookDetailsViewModel extends ChangeNotifier {
     try {
       await _repository.updateBook(updatedBook);
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint("Erro ao favoritar: $e");
     }
   }
+
   void atualizarLivroRetornado(Book livroAtualizado) {
-    this._book = livroAtualizado;
-    notifyListeners(); 
+    _book = livroAtualizado;
+    notifyListeners();
   }
+
   Future<void> updateProgress(Map<String, dynamic> result) async {
-    if (_book == null ) return;
+    if (_book == null) return;
     final bookBackup = _book!;
+
+    final paginaAnterior = bookBackup.currentPage;
+    final novaPagina = result['currentPage'] ?? paginaAnterior;
+    final paginasLidasAgora = novaPagina - paginaAnterior;
+
     final updatedBook = _book!.copyWith(
       status: result['status'],
       rating: (result['rating'] as int).toDouble(),
-      currentPage: result['currentPage'],
+      currentPage: novaPagina,
       totalPages: result['totalPages'],
     );
+
     _book = updatedBook;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      await _repository.updateBook(updatedBook);
+      await _repository.updateBookWithHistory(
+        book: updatedBook,
+        pagesReadInThisSession: paginasLidasAgora > 0 ? paginasLidasAgora : 0,
+      );
     } catch (e) {
-      debugPrint("Erro ao salvar progresso: ${e.toString()}");
+      debugPrint("Erro ao salvar progresso: $e");
       _book = bookBackup;
       _errorMessage = "Não foi possível salvar o progresso. Tente novamente.";
       notifyListeners();
