@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:book_life/features/book_details/viewmodels/book_details_viewmodel.dart';
 import 'package:book_life/features/reading_timer/viewmodels/timer_livro_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:book_life/core/models/book_model.dart';
@@ -32,7 +33,8 @@ class _LivroTimerState extends State<LivroTimer> {
   Widget build(BuildContext context) {
     ImageProvider? coverImageProvider;
 
-    if (widget.livro.coverBytes != null && widget.livro.coverBytes!.isNotEmpty) {
+    if (widget.livro.coverBytes != null &&
+        widget.livro.coverBytes!.isNotEmpty) {
       coverImageProvider = MemoryImage(widget.livro.coverBytes!);
     } else if (widget.livro.coverUrl != null &&
         widget.livro.coverUrl!.toString().isNotEmpty) {
@@ -47,7 +49,7 @@ class _LivroTimerState extends State<LivroTimer> {
             backgroundColor: Theme.of(context).colorScheme.primary,
             leading: IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(context, _viewModel.livro);
               },
               icon: Icon(
                 Icons.arrow_back,
@@ -57,7 +59,7 @@ class _LivroTimerState extends State<LivroTimer> {
             ),
             actions: [
               IconButton(
-                onPressed: () =>_viewModel.toggleFavorite(),
+                onPressed: () => _viewModel.toggleFavorite(),
                 icon: Icon(
                   _viewModel.livro.isFavorite ? Icons.star : Icons.star_border,
                   color: Theme.of(context).colorScheme.onPrimary,
@@ -293,6 +295,11 @@ class _LivroTimerState extends State<LivroTimer> {
                 SizedBox(
                   width: double.infinity,
                   child: ExpansionTile(
+                    onExpansionChanged: (isExpanded) async {
+                      if (isExpanded && _viewModel.laps.isEmpty) {
+                        await _viewModel.getlaps();
+                      }
+                    },
                     shape: Border(
                       bottom: BorderSide(
                         color: Theme.of(context).colorScheme.onPrimary,
@@ -320,7 +327,7 @@ class _LivroTimerState extends State<LivroTimer> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                lap.tempo,
+                                lap.formattedDuration,
                                 style: TextStyle(
                                   fontSize: 22,
                                   color: Theme.of(
@@ -329,7 +336,7 @@ class _LivroTimerState extends State<LivroTimer> {
                                 ),
                               ),
                               Text(
-                                lap.date,
+                                lap.formattedDate,
                                 style: TextStyle(
                                   fontSize: 15,
                                   color: Theme.of(

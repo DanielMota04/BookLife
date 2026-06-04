@@ -20,8 +20,6 @@ class BookDetailsViewModel extends ChangeNotifier {
   }) : _repository = repository ?? BookDetailsRepository() {
     if (initialBook != null) {
       _book = initialBook;
-    } else {
-      
     }
   }
 
@@ -56,7 +54,10 @@ class BookDetailsViewModel extends ChangeNotifier {
       debugPrint(e.toString());
     }
   }
-
+  void atualizarLivroRetornado(Book livroAtualizado) {
+    this._book = livroAtualizado;
+    notifyListeners(); 
+  }
   Future<void> updateProgress(Map<String, dynamic> result) async {
     if (_book == null ) return;
     final bookBackup = _book!;

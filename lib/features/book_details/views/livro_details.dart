@@ -42,7 +42,6 @@ class _LivroDetailsState extends State<LivroDetails> {
     if (resultado != null && context.mounted) {
       _viewModel.updateProgress(resultado);
     }
-    
   }
 
   @override
@@ -111,7 +110,8 @@ class _LivroDetailsState extends State<LivroDetails> {
                               ? DecorationImage(
                                   image: coverImageProvider,
                                   fit: BoxFit.cover,
-                              ): null,
+                                )
+                              : null,
                         ),
                       ),
                     ),
@@ -256,13 +256,16 @@ class _LivroDetailsState extends State<LivroDetails> {
                 ),
                 SizedBox(height: 10),
                 ElevatedButton.icon(
-                  onPressed: () => {
-                    Navigator.push(
+                  onPressed: () async {
+                    final livroAtualizado = await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => LivroTimer(livro: livro),
                       ),
-                    ),
+                    );
+                    if (livroAtualizado != null) {
+                      _viewModel.atualizarLivroRetornado(livroAtualizado);
+                    }
                   },
                   icon: Icon(Icons.access_time),
                   style: ElevatedButton.styleFrom(
