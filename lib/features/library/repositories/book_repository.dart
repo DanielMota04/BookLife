@@ -33,6 +33,7 @@ class BookRepository {
           ] 
         }) {
           title
+          pages
           publisher { name }
           image { url }
           book {
@@ -89,6 +90,7 @@ class BookRepository {
   ) async {
     String titulo = dadosDoLivro['title'] ?? '';
     String editora = dadosDoLivro['publisher']?['name'] ?? '';
+    int totalPaginas = dadosDoLivro['pages'] ?? 0;
     String autor = '';
     String generosFormatados = '';
     String sinopse = '';
@@ -148,6 +150,7 @@ class BookRepository {
       'generos': generosFormatados,
       'sinopse': sinopse,
       'capa': imagemCapa,
+      'paginas': totalPaginas,
     };
   }
 
