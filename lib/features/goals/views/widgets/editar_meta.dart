@@ -17,42 +17,41 @@ class EditarMetaModal extends StatefulWidget {
 }
 
 class _EditarMetaModalState extends State<EditarMetaModal> {
-  late TextEditingController _controladorDeProgresso;
+  late TextEditingController _controladorDeAlvo;
   bool _estaSalvando = false;
 
   @override
   void initState() {
     super.initState();
-    _controladorDeProgresso = TextEditingController(
-      text: widget.dadosAtuais['progressoAtual']?.toString() ?? '0',
+    _controladorDeAlvo = TextEditingController(
+      text: widget.dadosAtuais['alvo']?.toString() ?? '1',
     );
   }
 
   @override
   void dispose() {
-    _controladorDeProgresso.dispose();
+    _controladorDeAlvo.dispose();
     super.dispose();
   }
 
   Future<void> _salvarAlteracoes() async {
-    if (_controladorDeProgresso.text.isEmpty) return;
+    if (_controladorDeAlvo.text.isEmpty) return;
 
     setState(() => _estaSalvando = true);
 
     try {
-      int progressoAtualizado = int.parse(_controladorDeProgresso.text);
-
+      int novoAlvo = int.parse(_controladorDeAlvo.text);
       await FirebaseFirestore.instance
           .collection('metas')
           .doc(widget.metaId)
           .update({
-        'progressoAtual': progressoAtualizado,
+        'alvo': novoAlvo,
       });
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Meta atualizada!'),
+            content: Text('Objetivo da meta atualizado!'),
             backgroundColor: Colors.green,
           ),
         );
@@ -105,7 +104,11 @@ class _EditarMetaModalState extends State<EditarMetaModal> {
 
   @override
   Widget build(BuildContext context) {
-    final objetivoDaMeta = widget.dadosAtuais['alvo'] ?? 0;
+    final tituloMeta = widget.dadosAtuais['titulo'] ?? '';
+    final categoria = widget.dadosAtuais['categoria'] ?? '';
+    String sufixo = "";
+    if (categoria == 'tempo') sufixo = tituloMeta.contains('horas') ? 'horas' : 'minutos';
+    if (categoria == 'paginas') sufixo = 'páginas';
 
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 40),
@@ -134,7 +137,7 @@ class _EditarMetaModalState extends State<EditarMetaModal> {
             const SizedBox(height: 8),
             Center(
               child: Text(
-                widget.dadosAtuais['titulo'] ?? '',
+                tituloMeta,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
@@ -144,12 +147,12 @@ class _EditarMetaModalState extends State<EditarMetaModal> {
             ),
             const SizedBox(height: 22),
             const Text(
-              "Progresso Atual:",
+              "Novo Objetivo (Alvo):",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 6),
             TextFormField(
-              controller: _controladorDeProgresso,
+              controller: _controladorDeAlvo,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 filled: true,
@@ -167,7 +170,7 @@ class _EditarMetaModalState extends State<EditarMetaModal> {
                     width: 2,
                   ),
                 ),
-                suffixText: "/ $objetivoDaMeta",
+                suffixText: sufixo,
               ),
             ),
             const SizedBox(height: 26),
