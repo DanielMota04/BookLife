@@ -20,6 +20,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   @override
   void dispose() {
@@ -99,7 +101,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   TextField(
                     controller: _passwordController,
                     style: TextStyle(color: AppColors.jetBlack),
-                    obscureText: true,
+                    obscureText: _obscurePassword,
+
                     decoration: InputDecoration(
                       labelText: 'Senha',
                       floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -110,6 +113,19 @@ class _RegisterPageState extends State<RegisterPage> {
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: AppColors.jetBlack,
+                        ),
+                      ),
                     ),
                   ),
 
@@ -117,7 +133,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   TextField(
                     controller: _confirmPasswordController,
-                    obscureText: true,
+                    style: TextStyle(color: AppColors.jetBlack),
+                    obscureText: _obscureConfirmPassword,
+
                     decoration: InputDecoration(
                       labelText: 'Confirmar Senha',
                       floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -127,6 +145,19 @@ class _RegisterPageState extends State<RegisterPage> {
                         color: AppColors.jetBlack,
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
+                      ),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _obscureConfirmPassword = !_obscureConfirmPassword;
+                          });
+                        },
+                        icon: Icon(
+                          _obscureConfirmPassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: AppColors.jetBlack,
+                        ),
                       ),
                     ),
                   ),

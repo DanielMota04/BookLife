@@ -18,6 +18,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -80,7 +81,8 @@ class _LoginPageState extends State<LoginPage> {
                   TextField(
                     controller: _passwordController,
                     style: TextStyle(color: AppColors.jetBlack),
-                    obscureText: true,
+                    obscureText: _obscurePassword,
+
                     decoration: InputDecoration(
                       labelText: 'Senha',
                       floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -90,6 +92,19 @@ class _LoginPageState extends State<LoginPage> {
                         color: AppColors.jetBlack,
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
+                      ),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: AppColors.jetBlack,
+                        ),
                       ),
                     ),
                   ),
@@ -123,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                               );
                             }
                           },
-                          
+
                     child: Text('LOGAR'),
                   ),
 
@@ -142,7 +157,6 @@ class _LoginPageState extends State<LoginPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-
                     onPressed: () {
                       widget.onGoToRegister?.call();
                     },
