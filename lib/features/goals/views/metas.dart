@@ -158,7 +158,7 @@ class _MetasPageState extends State<MetasPage> {
                                 }
 
                                 final taxaDeConclusao = (progressoAtualizado / objFinalLocal).clamp(0.0, 1.0);
-                                final rotuloDoProgresso = "${(taxaDeConclusao * 100).toInt()}%";
+                                final rotuloDoProgresso = "${(taxaDeConclusao * 100).ceil()}%";
 
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 14),
