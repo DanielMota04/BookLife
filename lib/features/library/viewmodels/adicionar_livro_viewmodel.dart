@@ -46,7 +46,7 @@ class AdicionarLivroViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _repository.salvarLivroNoBanco(novoLivro);
+      await _repository.salvarLivro(novoLivro);
       return true;
     } catch (e) {
       _definirErro("Erro ao salvar o livro.");

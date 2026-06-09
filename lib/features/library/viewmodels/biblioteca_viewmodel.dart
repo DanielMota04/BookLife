@@ -57,6 +57,14 @@ class BibliotecaViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> atualizarLivro(Book livroAtualizado) async {
+    try {
+      await _repository.atualizarLivro(livroAtualizado);
+    } catch (e) {
+      debugPrint('Erro ao atualizar livro: $e');
+    }
+  }
+
   Future<void> deletarLivro(String idDoLivro) async {
     try {
       await _repository.deletarLivro(idDoLivro);
