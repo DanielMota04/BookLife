@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:book_life/core/errors/auth_errors.dart';
 import 'package:book_life/features/settings/repositories/profile_repository.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +15,13 @@ class ProfileViewmodel extends ChangeNotifier {
   String? _errorMessage;
   String? _username;
   String? _email;
+  Uint8List? _photoBytes;
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   String? get username => _username;
   String? get email => _email;
+  Uint8List? get photoBytes => _photoBytes;
 
   Future<void> loadUserData() async {
     _isLoading = true;
@@ -27,6 +31,13 @@ class ProfileViewmodel extends ChangeNotifier {
       final data = await _repository.getCurrentUserData();
       _username = data['nome'];
       _email = data['email'];
+      if (data['photoBase64'] != null) {
+        try {
+          _photoBytes = base64Decode(data['photoBase64']);
+        } catch (_) {
+          _photoBytes = null;
+        }
+      }
     } on UserNotLoggedInException {
       _errorMessage = 'Usuário não está logado';
     } finally {
