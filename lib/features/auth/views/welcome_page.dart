@@ -16,12 +16,12 @@ class _WelcomePageState extends State<WelcomePage> {
 void _painel(String tipo) {
   final loginVm = context.read<LoginViewModel>();
   final registerVm = context.read<RegisterViewModel>();
-  final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     builder: (context) {
+      final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
       return MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: loginVm),
