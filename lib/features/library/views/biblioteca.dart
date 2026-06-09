@@ -139,6 +139,7 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
                           confirmDismiss: (direction) async {
                             if (direction == DismissDirection.startToEnd) {
                               // Ação de Editar
+                              Future.microtask(() async {
                               final livroAtualizado = await Navigator.push<Book>(
                                 context,
                                 MaterialPageRoute(
@@ -149,6 +150,7 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
                               if (livroAtualizado != null) {
                                 await _viewModel.atualizarLivro(livroAtualizado);
                               }
+                              });
                               // Retorna false para o card não ser apagado  da tela
                               return false; 
                               
