@@ -10,9 +10,18 @@ class BookRepository {
   final GoogleTranslator _tradutor = GoogleTranslator();
 
   // Salva o objeto Book no Firestore
-  Future<void> salvarLivroNoBanco(Book livro) async {
+  Future<void> salvarLivro(Book livro) async {
     await _firestore.collection('books').add(livro.toMap());
   }
+
+  Future<void> atualizarLivro(Book livro) async {
+    await _firestore.collection('books').doc(livro.id).update(livro.toMap());
+  }
+
+  //Deletar Livros
+  Future<void> deletarLivro(String idDoLivro) async {
+  await _firestore.collection('books').doc(idDoLivro).delete();
+}
 
   // Busca na API do Hardcover, com isso, traduz e retorna um Map com os dados
   Future<Map<String, dynamic>?> buscarDadosLivro(String isbnLimpo) async {
@@ -220,11 +229,6 @@ class BookRepository {
           }).toList();
         });
   }
-
-  //Deletar Livros
-  Future<void> deletarLivro(String idDoLivro) async {
-  await _firestore.collection('books').doc(idDoLivro).delete();
-}
 
   Map<String, dynamic> _corrigirDadosDoLivro(
     Map<String, dynamic> dadosOriginais,

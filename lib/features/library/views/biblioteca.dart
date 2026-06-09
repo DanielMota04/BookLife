@@ -1,12 +1,10 @@
 import 'package:book_life/app/router/routes.dart';
 import 'package:flutter/material.dart';
-
 import 'package:book_life/core/models/book_model.dart';
 import 'package:book_life/core/widgets/app_scaffold.dart';
 import 'package:book_life/features/library/views/cadastrar_livro.dart';
 import 'package:book_life/features/library/views/widgets/livro_card_widget.dart';
 import 'package:book_life/features/library/views/widgets/biblioteca_search_bar.dart';
-import 'package:book_life/features/book_details/views/livro_details.dart';
 import 'package:book_life/features/library/viewmodels/biblioteca_viewmodel.dart';
 import 'package:go_router/go_router.dart';
 
@@ -50,9 +48,7 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
             controller: _searchController,
             onChanged: _viewModel.atualizarPesquisa,
           ),
-
           const SizedBox(height: 16),
-
           // AnimatedBuilder para atualizar apenas as abas de filtro
           AnimatedBuilder(
             animation: _viewModel,
@@ -90,7 +86,6 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
                 if (livrosDoBanco == null || livrosDoBanco.isEmpty) {
                   return const Center(child: Text("Nenhum livro encontrado."));
                 }
-
                 // O AnimatedBuilder envolve apenas a lista para reagir na pesquisa e nos filtros instantaneamente
                 return AnimatedBuilder(
                   animation: _viewModel,
@@ -98,7 +93,6 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
                     final livrosParaExibir = _viewModel.aplicarFiltrosNaLista(
                       livrosDoBanco,
                     );
-
                     if (livrosParaExibir.isEmpty) {
                       return const Center(
                         child: Text("Nenhum livro corresponde à pesquisa."),
@@ -112,8 +106,21 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
                         final livro = livrosParaExibir[index];
                         return Dismissible(
                           key: Key(livro.id), // serve para direcionar o flutter a recarregar a pagina ao remover tal card
-                          direction: DismissDirection.endToStart,
+                          direction: DismissDirection.horizontal,
+                          // Deslizamento para Editar
                           background: Container(
+                            margin: const EdgeInsets.only(bottom: 14),
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.only(left: 20),
+                            child: const Icon(Icons.edit, color: Colors.white, size: 30),
+                          ),
+
+                          // Deslizamento para Deletar
+                          secondaryBackground: Container(
                             margin: const EdgeInsets.only(
                               bottom: 14,
                             ),
@@ -128,7 +135,31 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
                               size: 30,
                             ),
                           ),
+                          // O confirmDismiss foi utilizado para evitar que em qualquer direcao de arrasto o livro fosse deletado independentemente
+                          confirmDismiss: (direction) async {
+                            if (direction == DismissDirection.startToEnd) {
+                              // Ação de Editar
+                              final livroAtualizado = await Navigator.push<Book>(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AdicionarLivroPage(livroParaEditar: livro),
+                                ),
+                              );
+                              // Se a tela devolver um livro que foi editado ele vai salvar no firebase
+                              if (livroAtualizado != null) {
+                                await _viewModel.atualizarLivro(livroAtualizado);
+                              }
+                              // Retorna false para o card não ser apagado  da tela
+                              return false; 
+                              
+                            } else if (direction == DismissDirection.endToStart) {
+                              // Retorna true para o card sumir ao deletar e disparar o onDismissed
+                              return true; 
+                            }
+                            return false;
+                          },
                           onDismissed: (direction) {
+                            // Agora o onDismissed só é disparado se confirmDismiss retornar true par deletar
                             _viewModel.deletarLivro(livro.id);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(

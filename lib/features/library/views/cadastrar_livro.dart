@@ -2,7 +2,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:book_life/core/models/book_model.dart';
 import 'package:book_life/core/widgets/input_text_field.dart';
 import 'package:book_life/core/enums/reading_status.dart';
@@ -10,7 +9,8 @@ import 'package:book_life/features/library/views/widgets/cover_picker.dart';
 import 'package:book_life/features/library/viewmodels/adicionar_livro_viewmodel.dart';
 
 class AdicionarLivroPage extends StatefulWidget {
-  const AdicionarLivroPage({super.key});
+  final Book? livroParaEditar;
+  const AdicionarLivroPage({super.key, this.livroParaEditar});
 
   @override
   State<AdicionarLivroPage> createState() => _AdicionarLivroPageState();
@@ -27,6 +27,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
   final TextEditingController _sinopseController = TextEditingController(); 
   Uint8List? _imagemLivro;
   int _paginasDoLivro = 0;
+  bool get _funcEdicao => widget.livroParaEditar != null;
 
   @override
   void initState() {
@@ -39,6 +40,19 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
         _viewModel.limparErro();
       }
     });
+  
+    // Foi feito no initState para que os dados dos livros ja sejam injetados com as controllers assim a edicao ja abre com os dados preenchidos
+    if (_funcEdicao) {
+      final livro = widget.livroParaEditar!;
+      _isbnController.text = livro.isbn ?? '';
+      _tituloController.text = livro.title;
+      _autorController.text = livro.author ?? '';
+      _editoraController.text = livro.publisher ?? '';
+      _generoController.text = livro.genres.join(', ');
+      _sinopseController.text = livro.synopsis ?? '';
+      _imagemLivro = livro.coverBytes;
+      _paginasDoLivro = livro.totalPages;
+    }
   }
 
   @override
@@ -110,7 +124,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
     }
 
     final livroParaSalvar = Book(
-      id: 'temporario', 
+      id: _funcEdicao ? widget.livroParaEditar!.id : 'temporario', 
       userId: usuarioAtual.uid,
       title: _tituloController.text.trim(),
       author: _autorController.text.trim(),
@@ -124,9 +138,14 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
       status: ReadingStatus.wishlist,
     );
 
-    final sucesso = await _viewModel.salvarNovoLivro(livroParaSalvar);
-    if (sucesso && mounted) {
-      Navigator.pop(context);
+    if (_funcEdicao) {
+      Navigator.pop(context, livroParaSalvar);
+    } 
+    else {
+      final sucesso = await _viewModel.salvarNovoLivro(livroParaSalvar);
+      if (sucesso && mounted) {
+        Navigator.pop(context);
+      }
     }
   }
 
@@ -151,7 +170,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "Adicionar Novo Livro",
+                    _funcEdicao ? "Editar Livro" : "Adicionar Novo Livro",
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -250,7 +269,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                       child: _viewModel.salvandoLivro
                           ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                           : Text(
-                              "Salvar",
+                             _funcEdicao ? "Salvar Alterações" : "Salvar",
                               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
                             ),
                     ),
