@@ -1,14 +1,18 @@
+import 'package:book_life/features/settings/viewmodels/profile_viewmodel.dart';
 import 'package:book_life/features/settings/views/widgets/page_title_widget.dart';
+import 'package:book_life/features/settings/views/widgets/progile_page_widgets/skeleton_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const String username = 'João da Silva';
-    const String email = 'joao.silva@email.com';
+    final viewmodel = context.watch<ProfileViewmodel>();
+    final username = viewmodel.username ?? '';
+    final email = viewmodel.email ?? '';
 
     return Scaffold(
       body: SafeArea(
@@ -27,7 +31,7 @@ class ProfilePage extends StatelessWidget {
               const SizedBox(height: 16),
 
               Center(
-                child: Column(
+                child: viewmodel.isLoading ? buildSkeleton() : Column(
                   children: [
                     CircleAvatar(
                       radius: 52,
