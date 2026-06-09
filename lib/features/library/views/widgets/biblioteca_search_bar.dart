@@ -39,12 +39,7 @@ class BibliotecaSearchBar extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 10),
-          Icon(
-            Icons.filter_alt_outlined,
-            size: 32,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
+          const SizedBox(width: 10)
         ],
       ),
     );
