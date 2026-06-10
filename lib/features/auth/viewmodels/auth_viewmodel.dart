@@ -1,3 +1,4 @@
+import 'package:book_life/core/errors/auth_errors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:book_life/features/auth/models/register_user_model.dart';
 import 'package:book_life/features/auth/models/login_user_model.dart';
@@ -104,4 +105,25 @@ class LoginViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> loginWithGoogle() async {
+  _isLoading = true;
+  _errorMessage = null;
+  notifyListeners();
+
+  try {
+    await _repository.loginWithGoogle();
+    return true;
+  } on UnauthorizedDomainException {
+    _errorMessage = 'Use seu e-mail @souunit para entrar!';
+    return false;
+  } on UnknownAuthException {
+    _errorMessage = 'Erro ao entrar com o Google!';
+    return false;
+  } finally {
+    _isLoading = false;
+    notifyListeners();
+  }
+}
+}
 }

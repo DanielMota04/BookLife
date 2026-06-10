@@ -29,3 +29,7 @@ class UnknownAuthException extends AuthException {
   @override
   String toString() => 'UnknownAuthException: código=$code, $message';
 }
+
+class UnauthorizedDomainException extends AuthException {
+  UnauthorizedDomainException() : super('Use seu e-mail @souunit para entrar');
+}
