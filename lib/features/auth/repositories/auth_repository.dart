@@ -3,6 +3,7 @@ import 'package:book_life/features/auth/models/login_user_model.dart';
 import 'package:book_life/features/auth/models/register_user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthRepository {
   final FirebaseAuth _auth;
@@ -55,6 +56,37 @@ class AuthRepository {
         default:
           throw UnknownAuthException(e.code);
       }
+    }
+  }
+
+  Future<void> loginWithGoogle() async {
+    final user = await GoogleSignIn().signIn();
+    if (user == null) return;
+
+    final googleAuth = await user.authentication;
+    final userCredentials = GoogleAuthProvider.credential(
+      idToken: googleAuth.idToken,
+      accessToken: googleAuth.accessToken,
+    );
+
+    try {
+      final result = await _auth.signInWithCredential(userCredentials);
+
+      if (!user.email.endsWith('@souunit.unit.br')) {
+        await _auth.signOut();
+        await GoogleSignIn().signOut();
+        throw UnauthorizedDomainException();
+      }
+
+      if (result.additionalUserInfo?.isNewUser == true) {
+        await _firestore.collection('users').doc(result.user!.uid).set({
+          'nome': user.displayName,
+          'email': user.email,
+          'createdAt': DateTime.now(),
+        });
+      }
+    } on FirebaseAuthException catch (e) {
+      throw UnknownAuthException(e.code);
     }
   }
 }
