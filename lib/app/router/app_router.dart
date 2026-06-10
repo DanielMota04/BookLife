@@ -42,6 +42,12 @@ final appRouter = GoRouter(
             ),
           ),
 
+            ChangeNotifierProvider(
+            create: (context) => ForgotPasswordViewModel(
+              AuthRepository(FirebaseAuth.instance, FirebaseFirestore.instance),
+            ),
+          ),
+
           ChangeNotifierProvider(
             create: (context) => RegisterViewModel(
               AuthRepository(FirebaseAuth.instance, FirebaseFirestore.instance),
