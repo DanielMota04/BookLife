@@ -53,11 +53,11 @@ class RegisterViewModel extends ChangeNotifier {
         ),
       );
       return true;
-    } catch (e) {
-      _errorMessage = e.toString();
+    }on AuthException catch (e) {
+       _errorMessage = e.message;
       return false;
     } finally {
-      _isLoading = false;
+       _isLoading = false;
       notifyListeners();
     }
   }
@@ -90,8 +90,8 @@ class LoginViewModel extends ChangeNotifier {
         LoginUserModel(email: email, password: password),
       );
       return true;
-    } catch (e) {
-      _errorMessage = e.toString();
+    }on AuthException catch (e) {
+      _errorMessage = e.message;
       return false;
     } finally {
       _isLoading = false;
