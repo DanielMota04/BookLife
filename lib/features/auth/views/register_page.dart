@@ -2,13 +2,14 @@ import 'package:book_life/app/router/routes.dart';
 import 'package:book_life/core/constants/app_colors.dart';
 import 'package:book_life/features/auth/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class RegisterPage extends StatefulWidget {
-   final VoidCallback? onGoToRegister;
+  final VoidCallback? onGoToRegister;
   const RegisterPage({super.key, this.onGoToRegister});
 
   @override
@@ -35,6 +36,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final viewmodel = context.watch<RegisterViewModel>();
+    final loginVM = context.watch<LoginViewModel>();
     return Material(
       color: AppColors.paleSky,
       child: SingleChildScrollView(
@@ -79,7 +81,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  SizedBox(height: 10),
+                  SizedBox(height: 5),
 
                   TextField(
                     controller: _emailController,
@@ -96,7 +98,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  SizedBox(height: 10),
+                  SizedBox(height: 5),
 
                   TextField(
                     controller: _passwordController,
@@ -129,7 +131,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  SizedBox(height: 10),
+                  SizedBox(height: 5),
 
                   TextField(
                     controller: _confirmPasswordController,
@@ -162,7 +164,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  SizedBox(height: 10),
+                  SizedBox(height: 15),
 
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -196,26 +198,52 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: Text('CRIAR'),
                   ),
 
-                  SizedBox(height: 10),
+                  SizedBox(height: 15),
+              
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
 
-                  Text(
-                    'Já possui uma Conta?',
-                    style: TextStyle(color: AppColors.jetBlack),
+                  IconButton(
+                    onPressed: loginVM.isLoading
+                        ? null
+                        : () async {
+                            await loginVM.loginWithGoogle();
+                            if (!mounted) return;
+                            if (loginVM.errorMessage == null) {
+                              context.go(Routes.library);
+                            }
+                            if (loginVM.errorMessage != null) {
+                              showTopSnackBar(
+                                Overlay.of(context),
+                                CustomSnackBar.error(
+                                  message: loginVM.errorMessage!,
+                                ),
+                              );
+                            }
+                          },
+
+                    iconSize: 30,
+                    icon: SvgPicture.asset('assets/images/GoogleIcon.svg'),
                   ),
 
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppColors.jetBlack,
-                      textStyle: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                      Text("ou",style: TextStyle(color: AppColors.jetBlack, fontSize: 20)),
 
-                    onPressed: () {
-                      widget.onGoToRegister?.call();
-                    },
-                    child: const Text('Fazer Login'),
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          foregroundColor: AppColors.jetBlack,
+                          textStyle: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                        onPressed: () {
+                          widget.onGoToRegister?.call();
+                        },
+                        child: const Text('Já possui uma Conta?'),
+                      ),
+                    ],
                   ),
                 ],
               ),

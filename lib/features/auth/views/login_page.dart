@@ -2,6 +2,7 @@ import 'package:book_life/app/router/routes.dart';
 import 'package:book_life/core/constants/app_colors.dart';
 import 'package:book_life/features/auth/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -76,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
 
-                  SizedBox(height: 20),
+                  SizedBox(height: 15),
 
                   TextField(
                     controller: _passwordController,
@@ -109,7 +110,37 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
 
-                  SizedBox(height: 20),
+                  SizedBox(height: 5),
+
+                  Align(
+                    alignment: AlignmentGeometry.centerRight,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.jetBlack,
+                        textStyle: const TextStyle(
+                          decoration: TextDecoration.underline,
+                          decorationThickness: 2,
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onPressed: () async {
+                      final vm = context.read<ForgotPasswordViewModel>();
+                      await vm.sendResetEmail(_emailController.text);
+                      if (!mounted) return;
+                      if (vm.emailSent) {
+                        showTopSnackBar(Overlay.of(context),
+                          CustomSnackBar.success(message: 'Email de recuperação enviado'));
+                      } else if (vm.errorMessage != null) {
+                        showTopSnackBar(Overlay.of(context),
+                          CustomSnackBar.error(message: vm.errorMessage!));
+                      }
+                    },
+                      child: const Text("Esqueci a senha"),
+                    ),
+                  ),
+
+                  SizedBox(height: 15),
 
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -140,6 +171,38 @@ class _LoginPageState extends State<LoginPage> {
                           },
 
                     child: Text('LOGAR'),
+                  ),
+
+                  SizedBox(height: 5),
+
+                  Text(
+                    'ou',
+                    style: TextStyle(color: AppColors.jetBlack, fontSize: 20),
+                  ),
+
+                  SizedBox(height: 5),
+
+                  IconButton(
+                    onPressed: viewmodel.isLoading
+                        ? null
+                        : () async {
+                            await viewmodel.loginWithGoogle();
+                            if (!mounted) return;
+                            if (viewmodel.errorMessage == null) {
+                              context.go(Routes.library);
+                            }
+                            if (viewmodel.errorMessage != null) {
+                              showTopSnackBar(
+                                Overlay.of(context),
+                                CustomSnackBar.error(
+                                  message: viewmodel.errorMessage!,
+                                ),
+                              );
+                            }
+                          },
+
+                    iconSize: 30,
+                    icon: SvgPicture.asset('assets/images/GoogleIcon.svg'),
                   ),
 
                   SizedBox(height: 10),
