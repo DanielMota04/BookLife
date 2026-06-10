@@ -36,6 +36,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final viewmodel = context.watch<RegisterViewModel>();
+    final loginVM = context.watch<LoginViewModel>();
     return Material(
       color: AppColors.paleSky,
       child: SingleChildScrollView(
@@ -203,13 +204,28 @@ class _RegisterPageState extends State<RegisterPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
 
-                      IconButton(
-                        onPressed: () {
-                          // RegisterGoogle
-                        },
-                        iconSize: 30,
-                        icon: SvgPicture.asset('assets/images/GoogleIcon.svg'),
-                      ),
+                  IconButton(
+                    onPressed: loginVM.isLoading
+                        ? null
+                        : () async {
+                            await loginVM.loginWithGoogle();
+                            if (!mounted) return;
+                            if (loginVM.errorMessage == null) {
+                              context.go(Routes.library);
+                            }
+                            if (loginVM.errorMessage != null) {
+                              showTopSnackBar(
+                                Overlay.of(context),
+                                CustomSnackBar.error(
+                                  message: loginVM.errorMessage!,
+                                ),
+                              );
+                            }
+                          },
+
+                    iconSize: 30,
+                    icon: SvgPicture.asset('assets/images/GoogleIcon.svg'),
+                  ),
 
                       Text("ou",style: TextStyle(color: AppColors.jetBlack, fontSize: 20)),
 

@@ -1,4 +1,5 @@
 import 'package:book_life/core/models/book_model.dart';
+import 'package:book_life/core/services/auth_state_notifier.dart';
 import 'package:book_life/features/auth/repositories/auth_repository.dart';
 import 'package:book_life/features/auth/viewmodels/auth_viewmodel.dart';
 import 'package:book_life/features/book_details/views/livro_details.dart';
@@ -27,8 +28,13 @@ import 'routes.dart';
 
 final appRouter = GoRouter(
   initialLocation: Routes.welcome,
+  refreshListenable: AuthStateNotifier(FirebaseAuth.instance),
   redirect: (context, state) {
+  final loggedIn = FirebaseAuth.instance.currentUser != null;
+  final onWelcome = state.matchedLocation == Routes.welcome;
 
+  if (!loggedIn && !onWelcome) return Routes.welcome;
+  if (loggedIn && onWelcome) return Routes.library;
     return null;
   },
   routes: [
