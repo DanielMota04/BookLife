@@ -21,7 +21,6 @@ class RegisterViewModel extends ChangeNotifier {
     required String password,
     required String confirmPassword,
   }) async {
-
     if (name.isEmpty || email.isEmpty || password.isEmpty) {
       _errorMessage = 'Todos os campos são obrigatórios.';
       notifyListeners();
@@ -50,7 +49,7 @@ class RegisterViewModel extends ChangeNotifier {
           name: name,
           email: email,
           password: password,
-          confirmPassword: confirmPassword
+          confirmPassword: confirmPassword,
         ),
       );
       return true;
@@ -75,10 +74,7 @@ class LoginViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  Future<bool> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<bool> login({required String email, required String password}) async {
     if (email.isEmpty || password.isEmpty) {
       _errorMessage = 'Todos os campos são obrigatórios';
       notifyListeners();
@@ -91,10 +87,7 @@ class LoginViewModel extends ChangeNotifier {
 
     try {
       await _repository.loginUser(
-        LoginUserModel(
-          email: email,
-          password: password,
-        ),
+        LoginUserModel(email: email, password: password),
       );
       return true;
     } catch (e) {
@@ -107,23 +100,22 @@ class LoginViewModel extends ChangeNotifier {
   }
 
   Future<bool> loginWithGoogle() async {
-  _isLoading = true;
-  _errorMessage = null;
-  notifyListeners();
-
-  try {
-    await _repository.loginWithGoogle();
-    return true;
-  } on UnauthorizedDomainException {
-    _errorMessage = 'Use seu e-mail @souunit para entrar!';
-    return false;
-  } on UnknownAuthException {
-    _errorMessage = 'Erro ao entrar com o Google!';
-    return false;
-  } finally {
-    _isLoading = false;
+    _isLoading = true;
+    _errorMessage = null;
     notifyListeners();
+
+    try {
+      await _repository.loginWithGoogle();
+      return true;
+    } on UnauthorizedDomainException {
+      _errorMessage = 'Use seu e-mail @souunit para entrar!';
+      return false;
+    } on UnknownAuthException {
+      _errorMessage = 'Erro ao entrar com o Google!';
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
-}
-}
 }
