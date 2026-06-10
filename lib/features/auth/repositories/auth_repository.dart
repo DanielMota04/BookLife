@@ -60,9 +60,14 @@ class AuthRepository {
   }
 
   Future<void> loginWithGoogle() async {
-    final user = await GoogleSignIn().signIn();
-    if (user == null) return;
+    final googleSignIn = GoogleSignIn(
+      clientId:
+          '658177107812-g20th3la725fl9bb225hi2l81khgs1qv.apps.googleusercontent.com',
+    );
 
+    final user = await googleSignIn.signIn();
+
+    if (user == null) return;
     final googleAuth = await user.authentication;
     final userCredentials = GoogleAuthProvider.credential(
       idToken: googleAuth.idToken,
@@ -72,9 +77,9 @@ class AuthRepository {
     try {
       final result = await _auth.signInWithCredential(userCredentials);
 
-      if (!user.email.endsWith('@souunit.unit.br')) {
+      if (!user.email.endsWith('@souunit.com.br')) {
         await _auth.signOut();
-        await GoogleSignIn().signOut();
+        await googleSignIn.signOut();
         throw UnauthorizedDomainException();
       }
 

@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:book_life/app/router/routes.dart';
 import 'package:book_life/core/models/book_model.dart';
 import 'package:book_life/features/book_details/views/widgets/modal/progress_form.dart';
 import 'package:book_life/features/reading_timer/views/livro_timer.dart';

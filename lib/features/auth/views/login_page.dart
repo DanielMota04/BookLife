@@ -172,9 +172,24 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 5),
 
                   IconButton(
-                    onPressed: () {
-                      // loginGoogle
-                    },
+                    onPressed: viewmodel.isLoading
+                        ? null
+                        : () async {
+                            await viewmodel.loginWithGoogle();
+                            if (!mounted) return;
+                            if (viewmodel.errorMessage == null) {
+                              context.go(Routes.library);
+                            }
+                            if (viewmodel.errorMessage != null) {
+                              showTopSnackBar(
+                                Overlay.of(context),
+                                CustomSnackBar.error(
+                                  message: viewmodel.errorMessage!,
+                                ),
+                              );
+                            }
+                          },
+
                     iconSize: 30,
                     icon: SvgPicture.asset('assets/images/GoogleIcon.svg'),
                   ),
