@@ -130,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                       if (!mounted) return;
                       if (vm.emailSent) {
                         showTopSnackBar(Overlay.of(context),
-                          CustomSnackBar.success(message: 'Email enviado'));
+                          CustomSnackBar.success(message: 'Email de recuperação enviado'));
                       } else if (vm.errorMessage != null) {
                         showTopSnackBar(Overlay.of(context),
                           CustomSnackBar.error(message: vm.errorMessage!));

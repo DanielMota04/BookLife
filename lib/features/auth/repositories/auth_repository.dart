@@ -13,6 +13,9 @@ class AuthRepository {
   AuthRepository(this._auth, this._firestore);
 
   Future<void> registerUser(RegisterUserModel data) async {
+    if (!data.email.endsWith('@souunit.com.br')) {
+      throw UnauthorizedDomainException();
+    }
     try {
       final userCredentials = await _auth.createUserWithEmailAndPassword(
         email: data.email,
@@ -126,6 +129,7 @@ class AuthRepository {
       final result = await _auth.signInWithCredential(userCredentials);
 
       if (!user.email.endsWith('@souunit.com.br')) {
+        await result.user?.delete();
         await _auth.signOut();
         await googleSignIn.signOut();
         throw UnauthorizedDomainException();

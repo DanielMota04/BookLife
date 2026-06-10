@@ -13,43 +13,45 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
-void _painel(String tipo) {
-  final loginVm = context.read<LoginViewModel>();
-  final registerVm = context.read<RegisterViewModel>();
+  void _painel(String tipo) {
+    final loginVm = context.read<LoginViewModel>();
+    final registerVm = context.read<RegisterViewModel>();
+    final forgotVm = context.read<ForgotPasswordViewModel>();
 
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    builder: (context) {
-      final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-      return MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: loginVm),
-          ChangeNotifierProvider.value(value: registerVm),
-        ],
-        child: ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.6 + keyboardHeight,
-            child: tipo == 'login'
-                ? LoginPage(
-                  onGoToRegister: () {
-                    Navigator.of(context).pop();
-                    _painel('register');
-                  },
-                )
-                : RegisterPage(
-                  onGoToRegister: () {
-                    Navigator.of(context).pop();
-                    _painel('login');
-                  },
-                ),
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider.value(value: loginVm),
+            ChangeNotifierProvider.value(value: registerVm),
+            ChangeNotifierProvider.value(value: forgotVm),
+          ],
+          child: ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.6 + keyboardHeight,
+              child: tipo == 'login'
+                  ? LoginPage(
+                      onGoToRegister: () {
+                        Navigator.of(context).pop();
+                        _painel('register');
+                      },
+                    )
+                  : RegisterPage(
+                      onGoToRegister: () {
+                        Navigator.of(context).pop();
+                        _painel('login');
+                      },
+                    ),
+            ),
           ),
-        ),
-      );
-    },
-  );
-}
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +92,7 @@ void _painel(String tipo) {
                   foregroundColor: AppColors.white,
                   minimumSize: Size(600, 60),
                 ),
-                onPressed: () => _painel('login'), 
+                onPressed: () => _painel('login'),
                 child: Text(
                   'Login',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
