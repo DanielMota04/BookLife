@@ -124,7 +124,18 @@ class _LoginPageState extends State<LoginPage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () async {
+                      final vm = context.read<ForgotPasswordViewModel>();
+                      await vm.sendResetEmail(_emailController.text);
+                      if (!mounted) return;
+                      if (vm.emailSent) {
+                        showTopSnackBar(Overlay.of(context),
+                          CustomSnackBar.success(message: 'Email de recuperação enviado'));
+                      } else if (vm.errorMessage != null) {
+                        showTopSnackBar(Overlay.of(context),
+                          CustomSnackBar.error(message: vm.errorMessage!));
+                      }
+                    },
                       child: const Text("Esqueci a senha"),
                     ),
                   ),
