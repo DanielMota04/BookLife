@@ -8,6 +8,7 @@ import 'package:book_life/features/library/views/cadastrar_livro.dart';
 import 'package:book_life/features/progress/views/meu_progresso.dart';
 import 'package:book_life/features/settings/repositories/profile_repository.dart';
 import 'package:book_life/features/settings/viewmodels/change_password_viewmodel.dart';
+import 'package:book_life/features/settings/viewmodels/logout_viewmodel.dart';
 import 'package:book_life/features/settings/viewmodels/profile_viewmodel.dart';
 import 'package:book_life/features/settings/viewmodels/update_profile_viewmodel.dart';
 import 'package:book_life/features/settings/views/profile_page.dart';
@@ -54,7 +55,12 @@ final appRouter = GoRouter(
     // settings
     GoRoute(
       path: Routes.settings,
-      builder: (context, state) => const SettingsPage(),
+      builder: (context, state) => ChangeNotifierProvider(
+        create: (_) => LogoutViewModel(
+          AuthRepository(FirebaseAuth.instance, FirebaseFirestore.instance),
+        ),
+        child: const SettingsPage(),
+      ),
     ),
     GoRoute(
       path: Routes.editProfile,

@@ -1,5 +1,6 @@
 import 'package:book_life/app/router/routes.dart';
 import 'package:book_life/core/widgets/app_scaffold.dart';
+import 'package:book_life/features/settings/views/widgets/confirm_logout_widget.dart';
 import 'package:book_life/features/settings/views/widgets/page_title_widget.dart';
 import 'package:book_life/features/settings/views/widgets/settings_item_widget.dart';
 import 'package:flutter/material.dart';
@@ -49,13 +50,7 @@ class SettingsPage extends StatelessWidget {
 
           SizedBox(height: space),
 
-          SettingsItem(
-            text: 'Sair',
-            onTap: () => {
-              // implementar logout quando tiver pronto
-              context.go(Routes.welcome),
-            },
-          ),
+          SettingsItem(text: 'Sair', onTap: () => confirmLogout(context)),
         ],
       ),
     );
