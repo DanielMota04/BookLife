@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 import 'package:book_life/core/models/book_model.dart';
 import 'package:book_life/features/book_details/viewmodels/book_details_viewmodel.dart';
@@ -8,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:book_life/features/book_details/views/widgets/button_status.dart';
-import 'package:provider/provider.dart';
 
 class LivroDetails extends StatefulWidget {
   final Book? book;
@@ -25,6 +23,7 @@ class _LivroDetailsState extends State<LivroDetails> {
   void initState() {
     super.initState();
     _viewModel = BookDetailsViewModel(initialBook: widget.book);
+    
   }
 
   Future<void> _abrirModalDeProgresso(
@@ -34,60 +33,66 @@ class _LivroDetailsState extends State<LivroDetails> {
     final resultado = await showDialog<Map<String, dynamic>>(
       context: context,
       builder: (context) {
-        return FormAtualizarProgresso(livro: livroAtual);
+        return FormAtualizarProgresso(livro: livroAtual,coverImage: _viewModel.coverImageProvider);
       },
     );
 
     if (resultado != null && context.mounted) {
-      _viewModel.updateProgress(resultado);
+    try {
+      await _viewModel.updateProgress(resultado);
+    } catch (e) {
+      if (context.mounted) {
+         ScaffoldMessenger.of(context).showSnackBar(
+           SnackBar(content: Text("Erro ao salvar progresso!")),
+         );
+      }
     }
   }
-
+  }
+  
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: _viewModel,
       builder: (context, _) {
+        final livro = _viewModel.book!;
+        final coverImage = _viewModel.coverImageProvider;
         if (_viewModel.isLoading) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
-
-        if (_viewModel.errorMessage != null || _viewModel.book == null) {
+        
+        if (_viewModel.book == null) {
           return Scaffold(
             appBar: AppBar(),
             body: Center(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text(_viewModel.errorMessage ?? "Livro indisponível."),
+                child: Text("Livro indisponível."),
               ),
             ),
           );
         }
 
-        final livro = _viewModel.book!;
+        
+        
 
-        ImageProvider? coverImageProvider;
-
-        if (livro.coverBytes != null && livro.coverBytes!.isNotEmpty) {
-          coverImageProvider = MemoryImage(livro.coverBytes!);
-        } else if (livro.coverUrl != null &&
-            livro.coverUrl!.toString().isNotEmpty) {
-          coverImageProvider = NetworkImage(livro.coverUrl.toString());
-        }
+        
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
               onPressed: () => {context.pop(context)},
               icon: const Icon(Icons.arrow_back, size: 32),
+              color: Theme.of(context).colorScheme.onSurface,
             ),
             actions: [
               IconButton(
                 onPressed: () => _viewModel.toggleFavorite(),
                 icon: Icon(
-                  livro.isFavorite ? Icons.star : Icons.star_border,
+                  _viewModel.book!.isFavorite ? Icons.star : Icons.star_border,
                   size: 32,
+                  color: livro.isFavorite ? Theme.of(context).colorScheme.primary : null,
                 ),
               ),
             ],
@@ -104,10 +109,10 @@ class _LivroDetailsState extends State<LivroDetails> {
                       child: Container(
                         height: 250,
                         decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          image: coverImageProvider != null
+                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                          image: coverImage != null
                               ? DecorationImage(
-                                  image: coverImageProvider,
+                                  image: coverImage,
                                   fit: BoxFit.cover,
                                 )
                               : null,
@@ -131,12 +136,12 @@ class _LivroDetailsState extends State<LivroDetails> {
                           height: 250,
                           width: 190,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            border: Border.all(color: Colors.white, width: 2),
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                            border: Border.all(color: Theme.of(context).colorScheme.surface, width: 2),
                             borderRadius: BorderRadius.circular(10),
-                            image: coverImageProvider != null
+                            image: coverImage != null
                                 ? DecorationImage(
-                                    image: coverImageProvider,
+                                    image: coverImage,
                                     fit: BoxFit.cover,
                                   )
                                 : null,
@@ -153,6 +158,7 @@ class _LivroDetailsState extends State<LivroDetails> {
                     textStyle: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface
                     ),
                   ),
                 ),
@@ -161,7 +167,7 @@ class _LivroDetailsState extends State<LivroDetails> {
                   style: GoogleFonts.inriaSans(
                     textStyle: TextStyle(
                       fontSize: 22,
-                      color: Color(0xFF022B3A),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -175,9 +181,9 @@ class _LivroDetailsState extends State<LivroDetails> {
                     return Chip(
                       label: Text(
                         genre,
-                        style: TextStyle(fontSize: 18, color: Colors.black),
+                        style: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.onSurfaceVariant),
                       ),
-                      backgroundColor: Color(0xFFC8C8C8),
+                      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -189,7 +195,7 @@ class _LivroDetailsState extends State<LivroDetails> {
                 SizedBox(height: 20),
                 Padding(
                   padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
-                  child: Divider(color: Colors.black),
+                  child: Divider(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 ),
                 Padding(
                   padding: EdgeInsetsGeometry.symmetric(
@@ -203,7 +209,7 @@ class _LivroDetailsState extends State<LivroDetails> {
                       textAlign: TextAlign.start,
                       style: GoogleFonts.inriaSans(
                         textStyle: TextStyle(fontSize: 20),
-                        color: Color(0xFF022B3A),
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ),
@@ -216,10 +222,10 @@ class _LivroDetailsState extends State<LivroDetails> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.star, size: 30),
+                          Icon(Icons.star, size: 30, color: Theme.of(context).colorScheme.onSurface),
                           Text(
                             livro.rating?.toInt().toString() ?? '0',
-                            style: GoogleFonts.inriaSans(fontSize: 22),
+                            style: GoogleFonts.inriaSans(fontSize: 22,color: Theme.of(context).colorScheme.onSurface),
                           ),
                         ],
                       ),
@@ -231,14 +237,14 @@ class _LivroDetailsState extends State<LivroDetails> {
                             "${livro.currentPage.toString()} / ${livro.totalPages.toString()} pages",
                             textAlign: TextAlign.end,
                             style: GoogleFonts.inriaSans(
-                              textStyle: TextStyle(fontSize: 22),
+                              textStyle: TextStyle(fontSize: 22,color: Theme.of(context).colorScheme.onSurface),
                             ),
                           ),
                           Text(
                             "${livro.displayProgressPercentage} %",
                             textAlign: TextAlign.end,
                             style: GoogleFonts.inriaSans(
-                              textStyle: TextStyle(fontSize: 22),
+                              textStyle: TextStyle(fontSize: 22,color: Theme.of(context).colorScheme.onSurface),
                             ),
                           ),
                         ],
@@ -268,8 +274,8 @@ class _LivroDetailsState extends State<LivroDetails> {
                   },
                   icon: Icon(Icons.access_time),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF4F7CAC),
-                    foregroundColor: Colors.white,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -287,7 +293,7 @@ class _LivroDetailsState extends State<LivroDetails> {
                 SizedBox(height: 10),
                 Padding(
                   padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
-                  child: Divider(color: Colors.black),
+                  child: Divider(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 ),
                 Padding(
                   padding: EdgeInsetsGeometry.symmetric(
@@ -301,7 +307,7 @@ class _LivroDetailsState extends State<LivroDetails> {
                       textAlign: TextAlign.start,
                       style: GoogleFonts.inriaSans(
                         textStyle: TextStyle(fontSize: 20),
-                        color: Color(0xFF022B3A),
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ),
@@ -313,7 +319,7 @@ class _LivroDetailsState extends State<LivroDetails> {
                     textAlign: TextAlign.justify,
                     style: GoogleFonts.inriaSans(
                       textStyle: TextStyle(fontSize: 20),
-                      color: Color(0xFF022B3A),
+                      color: Theme.of(context).colorScheme.onSurface,
                       height: 1.4,
                     ),
                   ),

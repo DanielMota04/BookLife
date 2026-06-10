@@ -4,6 +4,7 @@ import 'package:book_life/core/models/book_model.dart';
 import 'package:book_life/features/reading_timer/models/lapModel.dart';
 import 'package:book_life/features/reading_timer/repositories/reading_timer_repository.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class LivroTimerViewModel extends ChangeNotifier{
   Book livro;
@@ -14,17 +15,25 @@ class LivroTimerViewModel extends ChangeNotifier{
   Timer? _timer;
   DateTime? _startTime;
   List<LapModel> laps = [];
-  LivroTimerViewModel(this.livro);
+  LivroTimerViewModel(this.livro){
+    getlaps();
+  }
 
   Future<void> getlaps() async{
     try{
       this.laps = await _repository.getAllLaps(livro.id);
       notifyListeners();
     }catch(e){
+      debugPrint("Erro ao buscar o histórico de leitura: $e");
        notifyListeners();
     }
   }
 
+  List<LapModel> get recentLaps {
+    final copy = List.of(laps);
+    copy.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return copy;
+  }
   
   void startTimer(){
     isRunning = true;
@@ -53,13 +62,13 @@ class LivroTimerViewModel extends ChangeNotifier{
   }
 
   void stopTimer() {
-    _timer!.cancel();
+    _timer?.cancel();
     isRunning = false;
     notifyListeners();
   }
 
    void resetTimer() {
-    _timer!.cancel();
+    _timer?.cancel();
     
       _seconds = 0;
       _minutes = 0;
@@ -78,22 +87,37 @@ class LivroTimerViewModel extends ChangeNotifier{
   Future<void> addLaps() async {
     String lap = "$digitHours:$digitMinutes:$digitSeconds";
     DateTime agora = DateTime.now();
-    String dataAtual = "${agora.day.toString().padLeft(2, '0')}/${agora.month.toString().padLeft(2, '0')}/${agora.year}";
-    String horaAtual = " às ${agora.hour.toString().padLeft(2, '0')}:${agora.minute.toString().padLeft(2, '0')}";
     int totalseconds = (_hours * 3600) + (_minutes * 60) + _seconds;
+    final novoLap = LapModel(
+    durationInSeconds: totalseconds,
+    createdAt: agora,
+    formattedLap: lap,
+  );
+
     try{
+      laps.add(novoLap);
+      notifyListeners();
       await _repository.saveLap(livro.id, LapModel(durationInSeconds: totalseconds,createdAt: agora,formattedLap: lap));
-      laps.add(LapModel(durationInSeconds: totalseconds,createdAt: agora,formattedLap: lap));
+      await getlaps();
     }catch(e){
+      laps.remove(novoLap);
       notifyListeners();
 
     }
-    
-    notifyListeners();
   }
 
   bool get hasProgress => _seconds > 0 || _minutes > 0 || _hours > 0;
 
+  ImageProvider? get coverImageProvider {
+    if(livro == null) return null;
+    if (livro.coverBytes != null && livro.coverBytes!.isNotEmpty) {
+      return MemoryImage(livro.coverBytes!);
+    } else if (livro.coverUrl != null && livro.coverUrl!.toString().isNotEmpty) {
+      return NetworkImage(livro.coverUrl.toString());
+    }
+    return null;
+  }
+  
   Future<void> toggleFavorite() async {
     final updatedBook = livro.toggleFavorite(); 
     final previousBook = livro;

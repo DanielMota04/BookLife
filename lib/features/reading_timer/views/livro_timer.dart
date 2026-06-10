@@ -31,15 +31,7 @@ class _LivroTimerState extends State<LivroTimer> {
 
   @override
   Widget build(BuildContext context) {
-    ImageProvider? coverImageProvider;
-
-    if (widget.livro.coverBytes != null &&
-        widget.livro.coverBytes!.isNotEmpty) {
-      coverImageProvider = MemoryImage(widget.livro.coverBytes!);
-    } else if (widget.livro.coverUrl != null &&
-        widget.livro.coverUrl!.toString().isNotEmpty) {
-      coverImageProvider = NetworkImage(widget.livro.coverUrl.toString());
-    }
+    final ImageProvider? coverImageProvider = _viewModel.coverImageProvider;
     return ListenableBuilder(
       listenable: _viewModel,
       builder: (context, _) {
@@ -295,11 +287,7 @@ class _LivroTimerState extends State<LivroTimer> {
                 SizedBox(
                   width: double.infinity,
                   child: ExpansionTile(
-                    onExpansionChanged: (isExpanded) async {
-                      if (isExpanded && _viewModel.laps.isEmpty) {
-                        await _viewModel.getlaps();
-                      }
-                    },
+                    
                     shape: Border(
                       bottom: BorderSide(
                         color: Theme.of(context).colorScheme.onPrimary,
@@ -316,42 +304,61 @@ class _LivroTimerState extends State<LivroTimer> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    children: _viewModel.laps.map((lap) {
-                      return SizedBox(
-                        height: 60,
 
-                        width: double.infinity,
-                        child: Padding(
-                          padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                lap.formattedDuration,
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onPrimary,
-                                ),
+                    children: [
+                      for (int i = 0;i < _viewModel.recentLaps.length;i++) ...[
+                        if (i == 0 || _viewModel.recentLaps[i].formattedDate != _viewModel.recentLaps[i - 1].formattedDate)
+                          
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12.0,
+                              horizontal: 20.0,
+                            ),
+                            child: Text(
+                              _viewModel.recentLaps[i].formattedDate,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.onPrimary,
                               ),
-                              Text(
-                                lap.formattedDate,
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onPrimary,
+                            ),
+                          ),
+                          ),
+                          
+                        SizedBox(
+                          height: 60,
+                          width: double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 40),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  _viewModel.recentLaps[i].formattedDuration,
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    color: Theme.of(context,).colorScheme.onPrimary,
+                                  ),
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  _viewModel.recentLaps[i].formattedTime,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimary,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      );
-                    }).toList(),
+                      ],
+                    ],
                   ),
                 ),
-
                 SizedBox(height: 40),
               ],
             ),

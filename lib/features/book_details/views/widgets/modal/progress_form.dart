@@ -7,8 +7,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 class FormAtualizarProgresso extends StatefulWidget {
   final Book livro;
+  final ImageProvider? coverImage;
 
-  const FormAtualizarProgresso({super.key, required this.livro});
+  const FormAtualizarProgresso({super.key, required this.livro,this.coverImage});
 
   @override
   State<FormAtualizarProgresso> createState() => _FormAtualizarProgresso();
@@ -17,7 +18,6 @@ class FormAtualizarProgresso extends StatefulWidget {
 class _FormAtualizarProgresso extends State<FormAtualizarProgresso> {
   late ReadingStatus _statusSelecionado;
   late int _avaliacao;
-
   late TextEditingController _progressoController;
   late TextEditingController _totalController;
 
@@ -32,6 +32,8 @@ class _FormAtualizarProgresso extends State<FormAtualizarProgresso> {
     _totalController = TextEditingController(
       text: widget.livro.totalPages.toString(),
     );
+    _progressoController.addListener(_verificarSeTerminou);
+    _totalController.addListener(_verificarSeTerminou);
   }
 
   @override
@@ -41,16 +43,30 @@ class _FormAtualizarProgresso extends State<FormAtualizarProgresso> {
     super.dispose();
   }
 
+  void _verificarSeTerminou(){
+    final progresso = int.tryParse(_progressoController.text)??0;
+    final totalpags = int.tryParse(_totalController.text)??0;
+
+    if(progresso > totalpags && totalpags > 0){
+      _progressoController.text = totalpags.toString();
+      return;
+    }
+
+    if(progresso > 0 && progresso == totalpags){
+      if(_statusSelecionado != ReadingStatus.completed){
+        setState(() {
+          _statusSelecionado = ReadingStatus.completed;
+        });
+
+      }
+    }
+
+    
+  }
+
   @override
   Widget build(BuildContext context) {
-    ImageProvider? coverImageProvider;
-
-    if (widget.livro.coverBytes != null && widget.livro.coverBytes!.isNotEmpty) {
-          coverImageProvider = MemoryImage(widget.livro.coverBytes!);
-    } else if (widget.livro.coverUrl != null &&
-        widget.livro.coverUrl!.toString().isNotEmpty) {
-        coverImageProvider = NetworkImage(widget.livro.coverUrl.toString());
-    }
+    final coverImage = widget.coverImage;
     return SingleChildScrollView(
         child: Dialog(
           shape: RoundedRectangleBorder(
@@ -76,9 +92,9 @@ class _FormAtualizarProgresso extends State<FormAtualizarProgresso> {
                             color: Colors.grey[300],
                             border: Border.all(color: Colors.white, width: 2),
                             borderRadius: BorderRadius.circular(10),
-                            image: coverImageProvider != null
+                            image: coverImage != null
                                 ? DecorationImage(
-                                    image: coverImageProvider,
+                                    image: coverImage,
                                     fit: BoxFit.cover,
                                   )
                                 : null,

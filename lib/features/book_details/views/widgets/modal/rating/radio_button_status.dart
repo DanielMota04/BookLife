@@ -6,7 +6,7 @@ class StatusRadioButton<T>extends StatelessWidget {
   final String title;
   final T value;
   final T? groupValue;
-  final ValueChanged<T> onChanged;
+  final ValueSetter<T> onChanged;
 
   const StatusRadioButton({
     super.key,
