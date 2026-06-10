@@ -27,6 +27,12 @@ class RegisterViewModel extends ChangeNotifier {
       return false;
     }
 
+      if (!email.endsWith('@souunit.com.br')) {
+      _errorMessage = 'Só é permitido email @souunit.com.br';
+      notifyListeners();
+      return false;
+    }
+
     if (password != confirmPassword) {
       _errorMessage = 'As senhas não coincidem';
       notifyListeners();
