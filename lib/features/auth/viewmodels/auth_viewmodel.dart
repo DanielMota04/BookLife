@@ -34,8 +34,8 @@ class RegisterViewModel extends ChangeNotifier {
       return false;
     }
 
-    if (password.length < 6) {
-      _errorMessage = 'A senha deve ter no mínimo 6 caracteres';
+    if (password.length < 8) {
+      _errorMessage = 'A senha deve ter no mínimo 8 caracteres';
       notifyListeners();
       return false;
     }
@@ -124,5 +124,6 @@ class LoginViewModel extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
+}
 }
 }

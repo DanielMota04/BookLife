@@ -11,7 +11,9 @@ class TeamSection extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
           child: Text(
             'Equipe de Desenvolvimento',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
 

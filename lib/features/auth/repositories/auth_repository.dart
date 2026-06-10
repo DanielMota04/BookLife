@@ -93,5 +93,8 @@ class AuthRepository {
     } on FirebaseAuthException catch (e) {
       throw UnknownAuthException(e.code);
     }
+    
+  Future<void> logout() async {
+    await _auth.signOut();
   }
 }

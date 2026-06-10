@@ -1,14 +1,18 @@
+import 'package:book_life/features/settings/viewmodels/profile_viewmodel.dart';
 import 'package:book_life/features/settings/views/widgets/page_title_widget.dart';
+import 'package:book_life/features/settings/views/widgets/progile_page_widgets/skeleton_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const String username = 'João da Silva';
-    const String email = 'joao.silva@email.com';
+    final viewmodel = context.watch<ProfileViewmodel>();
+    final username = viewmodel.username ?? '';
+    final email = viewmodel.email ?? '';
 
     return Scaffold(
       body: SafeArea(
@@ -27,33 +31,38 @@ class ProfilePage extends StatelessWidget {
               const SizedBox(height: 16),
 
               Center(
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 52,
-                      backgroundColor: Colors.grey.shade300,
-                      child: const Icon(
-                        Icons.person,
-                        size: 60,
-                        color: Colors.white,
+                child: viewmodel.isLoading
+                    ? buildSkeleton()
+                    : Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 52,
+                            backgroundColor: Colors.grey.shade300,
+                            backgroundImage: viewmodel.photoBytes != null
+                                ? MemoryImage(viewmodel.photoBytes!)
+                                : null,
+                            child: viewmodel.photoBytes == null
+                                ? const Icon(
+                                    Icons.person,
+                                    size: 60,
+                                    color: Colors.white,
+                                  )
+                                : null,
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            username,
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            email,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(color: Colors.grey.shade600),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      username,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      email,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                  ],
-                ),
               ),
             ],
           ),

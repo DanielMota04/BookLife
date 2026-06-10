@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:book_life/core/errors/auth_errors.dart';
 import 'package:book_life/features/settings/repositories/profile_repository.dart';
 import 'package:flutter/material.dart';
@@ -18,17 +19,19 @@ class UpdateProfileViewmodel extends ChangeNotifier {
   String? currentUsername;
   String? currentEmail;
 
-  Future<void> submit(String? username, String? email) async {
+  Future<void> submit(String? username, String? email, Uint8List? photoBytes) async {
     _errorMessage = null;
     _isSuccess = false;
     _isLoading = true;
     notifyListeners();
 
     try {
-      await _repository.updateData(username: username, email: email);
+      await _repository.updateData(username: username, email: email, photoBytes: photoBytes);
       _isSuccess = true;
     } on UserNotLoggedInException {
       _errorMessage = 'Usuário não está logado';
+    } on RequiresRecentLoginException {
+      _errorMessage = 'A operação requer login recente';
     } on UnknownAuthException {
       _errorMessage = 'Ocorreu um erro ao tentar atualizar o perfil';
     } catch (e) {
