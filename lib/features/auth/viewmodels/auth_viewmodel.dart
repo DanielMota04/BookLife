@@ -53,11 +53,11 @@ class RegisterViewModel extends ChangeNotifier {
         ),
       );
       return true;
-    }on AuthException catch (e) {
-       _errorMessage = e.message;
+    } on AuthException catch (e) {
+      _errorMessage = e.message;
       return false;
     } finally {
-       _isLoading = false;
+      _isLoading = false;
       notifyListeners();
     }
   }
@@ -90,7 +90,7 @@ class LoginViewModel extends ChangeNotifier {
         LoginUserModel(email: email, password: password),
       );
       return true;
-    }on AuthException catch (e) {
+    } on AuthException catch (e) {
       _errorMessage = e.message;
       return false;
     } finally {
@@ -112,6 +112,48 @@ class LoginViewModel extends ChangeNotifier {
       return false;
     } on UnknownAuthException {
       _errorMessage = 'Erro ao entrar com o Google!';
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+}
+
+class ForgotPasswordViewModel extends ChangeNotifier {
+  final AuthRepository _repository;
+
+  ForgotPasswordViewModel(this._repository);
+
+  bool _isLoading = false;
+  String? _errorMessage;
+  bool _emailSent = false;
+
+  bool get isLoading => _isLoading;
+  String? get errorMessage => _errorMessage;
+  bool get emailSent => _emailSent;
+
+  Future<bool> sendResetEmail(String email) async {
+    if (email.isEmpty) {
+      _errorMessage = 'Informe o email';
+      notifyListeners();
+      return false;
+    }
+
+    _isLoading = true;
+    _errorMessage = null;
+    _emailSent = false;
+    notifyListeners();
+
+    try {
+      await _repository.sendPasswordResetEmail(email);
+      _emailSent = true;
+      return true;
+    } on AuthException catch (e) {
+      _errorMessage = e.message;
+      return false;
+    } catch (e) {
+      _errorMessage = 'Ocorreu um erro';
       return false;
     } finally {
       _isLoading = false;
