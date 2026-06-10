@@ -21,6 +21,7 @@ void _painel(String tipo) {
     context: context,
     isScrollControlled: true,
     builder: (context) {
+      final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
       return MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: loginVm),
@@ -29,7 +30,7 @@ void _painel(String tipo) {
         child: ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.6,
+            height: MediaQuery.of(context).size.height * 0.6 + keyboardHeight,
             child: tipo == 'login'
                 ? LoginPage(
                   onGoToRegister: () {

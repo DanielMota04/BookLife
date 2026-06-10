@@ -70,7 +70,7 @@ class LivroCard extends StatelessWidget {
                   Text("de ${livro.author}", style: TextStyle(fontSize: 14)),
                   const SizedBox(height: 18),
                   Text(
-                    "Progresso: ${(livro.progressPercentage * 100).toInt()}%",
+                    "Progresso: ${livro.displayProgressPercentage}%",
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 6),

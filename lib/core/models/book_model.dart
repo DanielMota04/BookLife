@@ -53,6 +53,12 @@ class Book {
   double get progressPercentage =>
       totalPages > 0 ? currentPage / totalPages : 0.0;
 
+  int get displayProgressPercentage {
+    if (totalPages <= 0) return 0;
+    if (currentPage >= totalPages) return 100;
+    return ((currentPage / totalPages) * 100).ceil().clamp(0, 100);
+  }
+  
   bool get isInProgress => status == ReadingStatus.reading;
 
   bool get isCompleted => status == ReadingStatus.completed;

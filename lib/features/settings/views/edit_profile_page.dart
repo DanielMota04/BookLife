@@ -98,6 +98,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         await viewmodel.submit(
                           _usernameController.text,
                           _emailController.text,
+                          _imagem,
                         );
                         if (!mounted) return;
 

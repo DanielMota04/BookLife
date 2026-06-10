@@ -31,33 +31,38 @@ class ProfilePage extends StatelessWidget {
               const SizedBox(height: 16),
 
               Center(
-                child: viewmodel.isLoading ? buildSkeleton() : Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 52,
-                      backgroundColor: Colors.grey.shade300,
-                      child: const Icon(
-                        Icons.person,
-                        size: 60,
-                        color: Colors.white,
+                child: viewmodel.isLoading
+                    ? buildSkeleton()
+                    : Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 52,
+                            backgroundColor: Colors.grey.shade300,
+                            backgroundImage: viewmodel.photoBytes != null
+                                ? MemoryImage(viewmodel.photoBytes!)
+                                : null,
+                            child: viewmodel.photoBytes == null
+                                ? const Icon(
+                                    Icons.person,
+                                    size: 60,
+                                    color: Colors.white,
+                                  )
+                                : null,
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            username,
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            email,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(color: Colors.grey.shade600),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      username,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      email,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                  ],
-                ),
               ),
             ],
           ),

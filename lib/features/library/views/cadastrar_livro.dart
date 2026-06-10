@@ -134,8 +134,13 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
       synopsis: _sinopseController.text.trim().isNotEmpty ? _sinopseController.text.trim() : null,
       coverBytes: _imagemLivro,
       totalPages: _paginasDoLivro,
-      addedAt: DateTime.now(),
-      status: ReadingStatus.wishlist,
+      // Estou usando esse operador ternario do _funcEdicao para que ao fazer uma edicao os dados se mantenham os mesmos, sem zerar paginaas lidas, status e tudo mais
+      addedAt: _funcEdicao ? widget.livroParaEditar!.addedAt : DateTime.now(),
+      status: _funcEdicao ? widget.livroParaEditar!.status : ReadingStatus.wishlist,
+      currentPage: _funcEdicao ? widget.livroParaEditar!.currentPage : 0,
+      rating: _funcEdicao ? widget.livroParaEditar!.rating : null,
+      isFavorite: _funcEdicao ? widget.livroParaEditar!.isFavorite : false,
+      review: _funcEdicao ? widget.livroParaEditar!.review : null,
     );
 
     if (_funcEdicao) {

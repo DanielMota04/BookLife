@@ -236,7 +236,7 @@ class _LivroDetailsState extends State<LivroDetails> {
                             ),
                           ),
                           Text(
-                            "${livro.totalPages > 0 ? ((livro.currentPage / livro.totalPages) * 100).round() : 0} %",
+                            "${livro.displayProgressPercentage} %",
                             textAlign: TextAlign.end,
                             style: GoogleFonts.inriaSans(
                               textStyle: TextStyle(fontSize: 22),
