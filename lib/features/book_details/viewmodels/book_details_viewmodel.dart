@@ -7,44 +7,40 @@ class BookDetailsViewModel extends ChangeNotifier {
 
   Book? _book;
   bool _isLoading = false;
-  String? _errorMessage;
-
   Book? get book => _book;
   bool get isLoading => _isLoading;
-  String? get errorMessage => _errorMessage;
   String? get bookId => _book?.id;
 
-  BookDetailsViewModel({
-    Book? initialBook,
-    BookDetailsRepository? repository,
-  }) : _repository = repository ?? BookDetailsRepository() {
+  BookDetailsViewModel({Book? initialBook, BookDetailsRepository? repository})
+    : _repository = repository ?? BookDetailsRepository() {
     if (initialBook != null) {
       _book = initialBook;
     }
   }
 
-  Future<void> fetchBook(String id) async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
 
-    try {
-      _book = await _repository.getBookById(id);
-      if (_book == null) {
-        _errorMessage = "Livro não encontrado.";
-      }
-    } catch (e) {
-      _errorMessage = e.toString();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
+  // Future<void> fetchBook(String id) async {
+  //   _isLoading = true;
+  //   _errorMessage = null;
+  //   notifyListeners();
+
+  //   try {
+  //     _book = await _repository.getBookById(id);
+  //     if (_book == null) {
+  //       _errorMessage = "Livro não encontrado.";
+  //     }
+  //   } catch (e) {
+  //     _errorMessage = e.toString();
+  //   } finally {
+  //     _isLoading = false;
+  //     notifyListeners();
+  //   }
+  // }
 
   Future<void> toggleFavorite() async {
-    if (_book == null || bookId == null) return;
-
+    final bookBackup = _book!;
     final updatedBook = _book!.toggleFavorite();
+
     _book = updatedBook;
     notifyListeners();
 
@@ -52,6 +48,8 @@ class BookDetailsViewModel extends ChangeNotifier {
       await _repository.updateBook(updatedBook);
     } catch (e) {
       debugPrint("Erro ao favoritar: $e");
+      _book = bookBackup;
+      notifyListeners();
     }
   }
 
@@ -60,10 +58,19 @@ class BookDetailsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  ImageProvider? get coverImageProvider {
+    if(_book == null) return null;
+    if (_book!.coverBytes != null && _book!.coverBytes!.isNotEmpty) {
+      return MemoryImage(_book!.coverBytes!);
+    } else if (_book!.coverUrl != null && _book!.coverUrl!.toString().isNotEmpty) {
+      return NetworkImage(_book!.coverUrl.toString());
+    }
+    return null;
+  }
+
   Future<void> updateProgress(Map<String, dynamic> result) async {
     if (_book == null) return;
     final bookBackup = _book!;
-
     final paginaAnterior = bookBackup.currentPage;
     final novaPagina = result['currentPage'] ?? paginaAnterior;
     final paginasLidasAgora = novaPagina - paginaAnterior;
@@ -76,7 +83,6 @@ class BookDetailsViewModel extends ChangeNotifier {
     );
 
     _book = updatedBook;
-    _errorMessage = null;
     notifyListeners();
 
     try {
@@ -87,8 +93,9 @@ class BookDetailsViewModel extends ChangeNotifier {
     } catch (e) {
       debugPrint("Erro ao salvar progresso: $e");
       _book = bookBackup;
-      _errorMessage = "Não foi possível salvar o progresso. Tente novamente.";
-      notifyListeners();
+       notifyListeners();
+      throw Exception('Não foi possível salvar o progresso');
+     
     }
   }
 }
