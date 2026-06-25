@@ -24,6 +24,10 @@ import '../../features/settings/views/edit_profile_page.dart';
 import '../../features/settings/views/change_password_page.dart';
 import '../../features/settings/views/themes_page.dart';
 import '../../features/settings/views/about_page.dart';
+import '../../features/community/views/comunidade_page.dart';
+import '../../features/community/viewmodels/comunidade_viewmodel.dart';
+import '../../features/challenges/views/desafios_page.dart';
+import '../../features/challenges/viewmodels/desafios_viewmodel.dart';
 import 'routes.dart';
 
 final appRouter = GoRouter(
@@ -132,5 +136,23 @@ final appRouter = GoRouter(
 
     // goals
     GoRoute(path: Routes.goals, builder: (context, state) => const MetasPage()),
+
+    // community
+    GoRoute(
+      path: Routes.community,
+      builder: (context, state) => ChangeNotifierProvider(
+        create: (_) => ComunidadeViewModel(),
+        child: const ComunidadePage(),
+      ),
+    ),
+
+    // challenges
+    GoRoute(
+      path: Routes.challenges,
+      builder: (context, state) => ChangeNotifierProvider(
+        create: (_) => DesafiosViewModel(),
+        child: const DesafiosPage(),
+      ),
+    ),
   ],
 );

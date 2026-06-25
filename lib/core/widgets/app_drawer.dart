@@ -59,6 +59,24 @@ class AppDrawer extends StatelessWidget {
               context.go(Routes.library);
             },
           ),
+          SizedBox(height: 20),
+          DrawerItem(
+            icon: Icons.people_alt_outlined,
+            text: 'Comunidade',
+            onTap: () {
+              Navigator.pop(context);
+              context.go(Routes.community);
+            },
+          ),
+          SizedBox(height: 20),
+          DrawerItem(
+            icon: Icons.emoji_events_outlined,
+            text: 'Desafio Anual',
+            onTap: () {
+              Navigator.pop(context);
+              context.go(Routes.challenges);
+            },
+          ),
           Spacer(),
         ],
       ),

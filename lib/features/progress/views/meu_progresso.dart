@@ -1,6 +1,10 @@
 import 'package:book_life/core/widgets/app_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:book_life/features/progress/viewmodels/progresso_viewmodel.dart';
+import 'package:book_life/features/progress/views/widgets/estatistica_widget.dart';
+import 'package:book_life/features/progress/views/widgets/meta_widget.dart';
+import 'package:book_life/features/progress/views/widgets/missao_widget.dart';
+import 'package:book_life/features/progress/views/widgets/painel_de_emblemas.dart';
 
 class MeuProgressoPage extends StatefulWidget {
   const MeuProgressoPage({super.key});
@@ -120,11 +124,11 @@ class _MeuProgressoPageState extends State<MeuProgressoPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _buildEstatistica(
+                          EstatisticaWidget(
                             numero: _viewModel.totalDeLivrosLidos.toString(),
                             texto: "livros lidos",
                           ),
-                          _buildEstatistica(
+                          EstatisticaWidget(
                             numero: _viewModel.totalDePaginasLidas.toString(),
                             texto: "páginas lidas",
                           ),
@@ -134,17 +138,42 @@ class _MeuProgressoPageState extends State<MeuProgressoPage> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                _buildMeta(
+                MetaWidget(
                   texto:
                       "Cumpriu ${_viewModel.totalDeMetasCumpridas} metas hoje",
                 ),
-                _buildMeta(
+                const SizedBox(height: 10),
+                MetaWidget(
                   texto: "Leu um total de ${_viewModel.horasLidas} horas",
                 ),
-                _buildMeta(
-                  texto:
-                      "Manteve o hábito a ${_viewModel.streakDiasSeguidos} dias seguidos",
+                const SizedBox(height: 10),
+                MetaWidget(
+                  texto: "Manteve o hábito a ${_viewModel.streakDiasSeguidos} dias seguidos",
                 ),
+                const SizedBox(height: 24),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: PainelDeEmblemas(
+                    totalLivros: _viewModel.totalDeLivrosLidos,
+                    streak: _viewModel.streakDiasSeguidos,
+                    totalPaginas: _viewModel.totalDePaginasLidas,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    "Histórico de Leitura",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF4F7CAC),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _buildGraficoHistorico(),
+                const SizedBox(height: 8),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
                   child: Row(
@@ -167,19 +196,19 @@ class _MeuProgressoPageState extends State<MeuProgressoPage> {
                   ),
                 ),
                 if (_viewModel.missaoLeitorCarteirinha)
-                  _buildMissao(
+                  MissaoWidget(
                     titulo: "Leitor de Carteirinha",
                     descricao: "Ler mais de 5 livros",
                     completa: true,
                   ),
                 if (_viewModel.missaoRatoBiblioteca)
-                  _buildMissao(
+                  MissaoWidget(
                     titulo: "Rato de Biblioteca",
                     descricao: "Tenha um streak de 5 dias",
                     completa: true,
                   ),
                 if (_viewModel.missaoMeiaHora)
-                  _buildMissao(
+                  MissaoWidget(
                     titulo: "A Regra da Meia Hora",
                     descricao: "Leia por 30 min usando o cronômetro",
                     completa: true,
@@ -206,19 +235,19 @@ class _MeuProgressoPageState extends State<MeuProgressoPage> {
                   ),
                 ),
                 if (!_viewModel.missaoLeitorCarteirinha)
-                  _buildMissao(
+                  MissaoWidget(
                     titulo: "Leitor de Carteirinha",
                     descricao: "Ler mais de 5 livros",
                     completa: false,
                   ),
                 if (!_viewModel.missaoRatoBiblioteca)
-                  _buildMissao(
+                  MissaoWidget(
                     titulo: "Rato de Biblioteca",
                     descricao: "Tenha um streak de 5 dias",
                     completa: false,
                   ),
                 if (!_viewModel.missaoMeiaHora)
-                  _buildMissao(
+                  MissaoWidget(
                     titulo: "A Regra da Meia Hora",
                     descricao: "Leia por 30 min usando o cronômetro",
                     completa: false,
@@ -232,101 +261,64 @@ class _MeuProgressoPageState extends State<MeuProgressoPage> {
     );
   }
 
-  Widget _buildEstatistica({required String numero, required String texto}) {
-    return Column(
-      children: [
-        Text(
-          numero,
-          style: const TextStyle(
-            fontSize: 50,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        Text(
-          texto,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
-        ),
-      ],
-    );
-  }
+  Widget _buildGraficoHistorico() {
+    final dadosMensais = _viewModel.dadosGraficoMensal;
 
-  Widget _buildMeta({required String texto}) {
-    return Container(
-      width: double.infinity,
-      height: 32,
-      margin: const EdgeInsets.only(bottom: 2),
-      color: const Color(0xFF4F7CAC),
-      alignment: Alignment.center,
-      child: Text(
-        texto,
-        style: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.bold,
+    if (dadosMensais.isEmpty) {
+      return Container(
+        height: 220,
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
           color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
         ),
-      ),
-    );
-  }
+        child: const Text("Sem dados de leitura ainda.", style: TextStyle(color: Colors.black54)),
+      );
+    }
 
-  Widget _buildMissao({
-    required String titulo,
-    required String descricao,
-    required bool completa,
-  }) {
+    final maiorValor = dadosMensais.map((e) => e['valor'] as int).reduce((a, b) => a > b ? a : b);
+
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      height: 220,
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: completa ? const Color(0xFF2EAD43) : Colors.white,
-        border: Border.all(color: Colors.grey.shade400),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Row(
-          children: [
-            Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-                border: Border.all(color: Colors.grey.shade400),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: dadosMensais.map((dado) {
+          final valor = dado['valor'] as int;
+          final proporcao = maiorValor > 0 ? valor / maiorValor : 0.0;
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                valor.toString(),
+                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black54),
               ),
-              child: Icon(
-                Icons.emoji_events_outlined,
-                color: completa ? const Color(0xFF2EAD43) : Colors.black54,
+              const SizedBox(height: 4),
+              Container(
+                width: 24,
+                height: 100 * proporcao,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF4F7CAC),
+                  borderRadius: BorderRadius.circular(4),
+                ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    titulo,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: completa ? Colors.white : Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    descricao,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: completa ? Colors.white : Colors.black54,
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 8),
+              Text(
+                dado['mes'] as String,
+                style: const TextStyle(fontSize: 12, color: Colors.black54),
               ),
-            ),
-          ],
-        ),
+            ],
+          );
+        }).toList(),
       ),
     );
   }

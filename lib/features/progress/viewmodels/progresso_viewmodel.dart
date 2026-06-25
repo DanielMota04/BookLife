@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:book_life/features/progress/repositories/progresso_repository.dart';
 import 'package:book_life/core/models/progresso_model.dart';
+import 'package:book_life/core/models/book_model.dart';
 
 class ProgressoViewModel extends ChangeNotifier {
   final ProgressoRepository _repository = ProgressoRepository();
@@ -14,6 +15,8 @@ class ProgressoViewModel extends ChangeNotifier {
   int _totalDeMetasCumpridas = 0;
   int _totalSegundosTimer = 0;
   int _streakDiasSeguidos = 0;
+  List<Map<String, dynamic>> _dadosGraficoMensal = [];
+
   bool get carregando => _carregando;
   String get mensagemErro => _mensagemErro;
   String get nomeDoUsuario => _nomeDoUsuario;
@@ -34,6 +37,7 @@ class ProgressoViewModel extends ChangeNotifier {
     if (missaoMeiaHora) count++;
     return count;
   }
+  List<Map<String, dynamic>> get dadosGraficoMensal => _dadosGraficoMensal;
 
   Future<void> inicializar() async {
     await processarEstatisticas();
@@ -82,12 +86,12 @@ class ProgressoViewModel extends ChangeNotifier {
     final hoje = DateTime.now();
     final hojeStr = hoje.toIso8601String().split('T')[0];
 
-    List<LivroModel> livros = [];
+    List<Book> livros = [];
     try {
       livros = await _repository.buscarLivros(idDoUsuario);
       for (var livro in livros) {
         paginasTemp += livro.currentPage;
-        if (livro.status == 'read' || livro.status == 'lido' || livro.status.contains('completed')) {
+        if (livro.isCompleted) {
           livrosTemp += 1;
         }
       }
@@ -131,6 +135,34 @@ class ProgressoViewModel extends ChangeNotifier {
     } catch (e) {
       _mensagemErro += "Erro Histórico (Páginas): $e\n\n";
     }
+
+    // Cálculo para o Gráfico Mensal (últimos 6 meses)
+    Map<String, int> livrosLidosPorMes = {};
+    for (int i = 5; i >= 0; i--) {
+      DateTime m = DateTime(hoje.year, hoje.month - i, 1);
+      String chave = "${m.year}-${m.month.toString().padLeft(2, '0')}";
+      livrosLidosPorMes[chave] = 0;
+    }
+
+    for (var livro in livros) {
+      if (livro.isCompleted && livro.addedAt != null) {
+        String chave = "${livro.addedAt.year}-${livro.addedAt.month.toString().padLeft(2, '0')}";
+        if (livrosLidosPorMes.containsKey(chave)) {
+          livrosLidosPorMes[chave] = livrosLidosPorMes[chave]! + 1;
+        }
+      }
+    }
+
+    List<String> nomeMeses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    List<Map<String, dynamic>> dadosGrafico = [];
+    livrosLidosPorMes.forEach((chave, valor) {
+      int mesIndex = int.parse(chave.split('-')[1]) - 1;
+      dadosGrafico.add({
+        'mes': nomeMeses[mesIndex],
+        'valor': valor,
+      });
+    });
+    _dadosGraficoMensal = dadosGrafico;
 
     try {
       final laps = await _repository.buscarLapsDoTimer(idDoUsuario);

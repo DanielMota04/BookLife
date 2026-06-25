@@ -1,11 +1,16 @@
 import 'package:book_life/app/router/routes.dart';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:book_life/core/models/book_model.dart';
 import 'package:book_life/core/widgets/app_scaffold.dart';
 import 'package:book_life/features/library/views/cadastrar_livro.dart';
 import 'package:book_life/features/library/views/widgets/livro_card_widget.dart';
 import 'package:book_life/features/library/views/widgets/biblioteca_search_bar.dart';
+import 'package:book_life/features/library/views/scanner_page.dart';
 import 'package:book_life/features/library/viewmodels/biblioteca_viewmodel.dart';
+import 'package:book_life/features/library/services/google_books_service.dart';
+import 'package:book_life/features/library/views/widgets/aba_de_filtro_widget.dart';
 import 'package:go_router/go_router.dart';
 
 class MinhaBiblioteca extends StatefulWidget {
@@ -44,9 +49,29 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
             ),
           ),
 
-          BibliotecaSearchBar(
-            controller: _searchController,
-            onChanged: _viewModel.atualizarPesquisa,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: BibliotecaSearchBar(
+                    controller: _searchController,
+                    onChanged: _viewModel.atualizarPesquisa,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.qr_code_scanner, color: Theme.of(context).colorScheme.onPrimaryContainer),
+                    onPressed: _openScanner,
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 16),
           // AnimatedBuilder para atualizar apenas as abas de filtro
@@ -57,10 +82,26 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
                 height: 45,
                 child: Row(
                   children: [
-                    _buildAbaDeFiltro("Todos"),
-                    _buildAbaDeFiltro("Lendo"),
-                    _buildAbaDeFiltro("Lido"),
-                    _buildAbaDeFiltro("Em espera"),
+                    AbaDeFiltroWidget(
+                      textoDoFiltro: "Todos",
+                      estaSelecionado: _viewModel.filtroAtivo == "Todos",
+                      onTap: () => _viewModel.atualizarFiltro("Todos"),
+                    ),
+                    AbaDeFiltroWidget(
+                      textoDoFiltro: "Lendo",
+                      estaSelecionado: _viewModel.filtroAtivo == "Lendo",
+                      onTap: () => _viewModel.atualizarFiltro("Lendo"),
+                    ),
+                    AbaDeFiltroWidget(
+                      textoDoFiltro: "Lido",
+                      estaSelecionado: _viewModel.filtroAtivo == "Lido",
+                      onTap: () => _viewModel.atualizarFiltro("Lido"),
+                    ),
+                    AbaDeFiltroWidget(
+                      textoDoFiltro: "Em espera",
+                      estaSelecionado: _viewModel.filtroAtivo == "Em espera",
+                      onTap: () => _viewModel.atualizarFiltro("Em espera"),
+                    ),
                   ],
                 ),
               );
@@ -203,29 +244,98 @@ class _MinhaBibliotecaState extends State<MinhaBiblioteca> {
     );
   }
 
-  Widget _buildAbaDeFiltro(String textoDoFiltro) {
-    final bool estaSelecionado = _viewModel.filtroAtivo == textoDoFiltro;
-
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => _viewModel.atualizarFiltro(textoDoFiltro),
-        child: Container(
-          alignment: Alignment.center,
-          color: estaSelecionado
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.surfaceContainerHighest,
-          child: Text(
-            textoDoFiltro,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: estaSelecionado
-                  ? Theme.of(context).colorScheme.onPrimary
-                  : Theme.of(context).colorScheme.onSurface,
-            ),
-          ),
-        ),
-      ),
+  Future<void> _openScanner() async {
+    // A tela do scanner retornará a string do ISBN (se lido com sucesso)
+    final String? isbnLido = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ScannerPage()),
     );
+
+    if (isbnLido != null && isbnLido.isNotEmpty) {
+      _processarIsbn(isbnLido);
+    }
+  }
+
+  Future<void> _processarIsbn(String isbn) async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Buscando Livro...')),
+    );
+
+    final dados = await _viewModel.buscarNaHardcover(isbn);
+
+    if (!mounted) return;
+
+    if (dados != null) {
+      final titulo = dados['titulo'] ?? 'Sem título';
+      final autor = dados['autor'] ?? 'Sem autor';
+      final Uint8List? capaBytes = dados['capa'];
+      final paginas = dados['paginas'] ?? 0;
+      final sinopse = dados['sinopse'] ?? '';
+      final editora = dados['editora'] ?? '';
+      final generos = (dados['generos'] as String).split(', ').where((s) => s.isNotEmpty).toList();
+
+      bool confirm = await showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Livro Encontrado!'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (capaBytes != null)
+                Image.memory(capaBytes, height: 120),
+              const SizedBox(height: 16),
+              Text(titulo, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(autor),
+              const SizedBox(height: 16),
+              const Text('Deseja adicionar este livro à sua biblioteca?'),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true), 
+              child: const Text('Adicionar', style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+      ) ?? false;
+
+      if (confirm && mounted) {
+        try {
+          // Nota: Como não temos o coverUrl real aqui, e não estamos subindo a imagem pro Storage,
+          // o coverUrl ficará nulo. Se a API retornasse a URL, poderíamos salvar.
+          final user = FirebaseAuth.instance.currentUser;
+          if (user != null) {
+            final book = Book(
+              id: DateTime.now().millisecondsSinceEpoch.toString(),
+              userId: user.uid,
+              title: titulo,
+              author: autor,
+              isbn: isbn,
+              publisher: editora,
+              totalPages: paginas,
+              currentPage: 0,
+              genres: generos,
+              synopsis: sinopse,
+              coverUrl: null, 
+              coverBytes: capaBytes,
+              addedAt: DateTime.now(),
+            );
+            await _viewModel.adicionarLivro(book);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Livro adicionado com sucesso!')),
+            );
+          }
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Erro ao adicionar: $e')),
+          );
+        }
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Livro não encontrado na Hardcover API.')),
+      );
+    }
   }
 }

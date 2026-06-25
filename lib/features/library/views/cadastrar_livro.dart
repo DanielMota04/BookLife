@@ -7,6 +7,7 @@ import 'package:book_life/core/widgets/input_text_field.dart';
 import 'package:book_life/core/enums/reading_status.dart';
 import 'package:book_life/features/library/views/widgets/cover_picker.dart';
 import 'package:book_life/features/library/viewmodels/adicionar_livro_viewmodel.dart';
+import 'package:book_life/features/library/views/scanner_page.dart';
 
 class AdicionarLivroPage extends StatefulWidget {
   final Book? livroParaEditar;
@@ -228,14 +229,19 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
                   CoverPicker(imagem: _imagemLivro, onTap: _selecionarImagem),
                   
                   const SizedBox(height: 22),
-                  InputTextField(controller: _tituloController, hint: "Digite o Título"),
-                  const SizedBox(height: 10),
-                  InputTextField(controller: _autorController, hint: "Autor do Livro (Opcional)"),
-                  const SizedBox(height: 10),
-                  InputTextField(controller: _editoraController, hint: "Editora (Opcional)"),
-                  const SizedBox(height: 10),
-                  InputTextField(controller: _generoController, hint: "Gêneros do Livro (Opcional)"),
-                  const SizedBox(height: 18),
+                  ...[
+                    {'c': _tituloController, 'h': "Digite o Título"},
+                    {'c': _autorController, 'h': "Autor do Livro (Opcional)"},
+                    {'c': _editoraController, 'h': "Editora (Opcional)"},
+                    {'c': _generoController, 'h': "Gêneros do Livro (Opcional)"},
+                  ].map((field) => Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: InputTextField(
+                      controller: field['c'] as TextEditingController,
+                      hint: field['h'] as String,
+                    ),
+                  )),
+                  const SizedBox(height: 8),
                   
                   Text(
                     "Sinopse (Opcional)",

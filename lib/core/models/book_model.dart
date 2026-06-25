@@ -20,6 +20,7 @@ class Book {
   final double? rating;
   final bool isFavorite;
   final String? review;
+  final bool isSpoiler;
   final DateTime addedAt;
 
   Book({
@@ -39,6 +40,7 @@ class Book {
     this.rating,
     this.isFavorite = false,
     this.review,
+    this.isSpoiler = false,
     required this.addedAt,
   }) {
     if (id.isEmpty) throw ArgumentError('id não pode ser vazio');
@@ -108,6 +110,7 @@ class Book {
     double? rating,
     bool? isFavorite,
     String? review,
+    bool? isSpoiler,
     DateTime? addedAt,
   }) {
     return Book(
@@ -127,6 +130,7 @@ class Book {
       rating: rating ?? this.rating,
       isFavorite: isFavorite ?? this.isFavorite,
       review: review ?? this.review,
+      isSpoiler: isSpoiler ?? this.isSpoiler,
       addedAt: addedAt ?? this.addedAt,
     );
   }
@@ -148,6 +152,7 @@ class Book {
       'rating': rating,
       'isFavorite': isFavorite,
       'review': review,
+      'isSpoiler': isSpoiler,
       'addedAt': Timestamp.fromDate(addedAt),
     };
   }
@@ -188,9 +193,10 @@ class Book {
       totalPages: map['totalPages']?.toInt() ?? 0,
       currentPage: map['currentPage']?.toInt() ?? 0,
       status: statusConvertido,
-      rating: map['rating']?.toDouble(),
+      rating: (map['rating'] as num?)?.toDouble(),
       isFavorite: map['isFavorite'] ?? false,
       review: map['review'],
+      isSpoiler: map['isSpoiler'] ?? false,
       addedAt: dataConvertida,
     );
   }

@@ -8,6 +8,8 @@ class Routes {
 
   static const progress = '/progress';
   static const goals = '/goals';
+  static const community = '/community';
+  static const challenges = '/challenges';
 
   static const settings = '/settings';
   static const editProfile = '/settings/edit-profile';

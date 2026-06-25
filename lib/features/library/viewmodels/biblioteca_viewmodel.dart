@@ -65,11 +65,29 @@ class BibliotecaViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> adicionarLivro(Book livro) async {
+    try {
+      await _repository.salvarLivro(livro);
+    } catch (e) {
+      debugPrint('Erro ao adicionar livro: $e');
+      rethrow;
+    }
+  }
+
   Future<void> deletarLivro(String idDoLivro) async {
     try {
       await _repository.deletarLivro(idDoLivro);
     } catch (e) {
       debugPrint('Erro ao deletar livro: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>?> buscarNaHardcover(String isbn) async {
+    try {
+      return await _repository.buscarDadosLivro(isbn);
+    } catch (e) {
+      debugPrint('Erro ao buscar na Hardcover: $e');
+      return null;
     }
   }
 }

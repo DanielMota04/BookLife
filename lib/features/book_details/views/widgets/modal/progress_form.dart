@@ -20,6 +20,8 @@ class _FormAtualizarProgresso extends State<FormAtualizarProgresso> {
   late int _avaliacao;
   late TextEditingController _progressoController;
   late TextEditingController _totalController;
+  late TextEditingController _resenhaController;
+  late bool _isSpoiler;
 
   @override
   void initState() {
@@ -32,6 +34,10 @@ class _FormAtualizarProgresso extends State<FormAtualizarProgresso> {
     _totalController = TextEditingController(
       text: widget.livro.totalPages.toString(),
     );
+    _resenhaController = TextEditingController(
+      text: widget.livro.review ?? '',
+    );
+    _isSpoiler = widget.livro.isSpoiler;
     _progressoController.addListener(_verificarSeTerminou);
     _totalController.addListener(_verificarSeTerminou);
   }
@@ -40,6 +46,7 @@ class _FormAtualizarProgresso extends State<FormAtualizarProgresso> {
   void dispose() {
     _progressoController.dispose();
     _totalController.dispose();
+    _resenhaController.dispose();
     super.dispose();
   }
 
@@ -178,6 +185,41 @@ class _FormAtualizarProgresso extends State<FormAtualizarProgresso> {
                     });
                   },
                 ),
+                SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    'Sua Opinião / Resenha',
+                    style: GoogleFonts.inriaSans(
+                      textStyle: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 8),
+                TextField(
+                  controller: _resenhaController,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    hintText: "O que achou deste livro?",
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                ),
+                SizedBox(height: 8),
+                CheckboxListTile(
+                  title: const Text(
+                    "Esta resenha contém spoiler",
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  value: _isSpoiler,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      _isSpoiler = value ?? false;
+                    });
+                  },
+                  controlAffinity: ListTileControlAffinity.leading,
+                  contentPadding: EdgeInsets.zero,
+                  activeColor: Colors.red,
+                ),
                 SizedBox(height: 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -278,6 +320,8 @@ class _FormAtualizarProgresso extends State<FormAtualizarProgresso> {
                           'rating': _avaliacao,
                           'currentPage': progressoFinal,
                           'totalPages': totalFinal,
+                          'review': _resenhaController.text.trim(),
+                          'isSpoiler': _isSpoiler,
                         });
                       },
                       style: ElevatedButton.styleFrom(
